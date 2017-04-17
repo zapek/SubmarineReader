@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="autoSync"
+		android:summary="Sync articles automatically"
+		android:title="Auto sync"/>
+	<ListPreference
+		android:defaultValue="100"
+		android:key="articlesToSync"
+		android:summary="Articles to fetch and keep locally: %s"
+		android:title="Number of articles to sync"
+		android:entries="@array/number_of_articles"
+		android:entryValues="@array/number_of_articles"/>
+	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="syncImages"
+		android:summary="Also download images when syncing articles"
+		android:title="Sync images"/>
+	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="directNetwork"
+		android:summary="Allow the articles to display inline videos and live embedded content"
+		android:title="Direct network access"/>
+</PreferenceScreen>

@@ -1,0 +1,25 @@
+a {
+	-ms-word-break: break-all;
+	word-break: break-all;
+
+	word-break: break-word; /* webkit */
+
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
+}
+
+img {
+	max-width: 100%;
+	width: auto;
+	height: auto;
+}
+
+figure {
+	display: block;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 0px;
+	margin-right: 0px;
+}

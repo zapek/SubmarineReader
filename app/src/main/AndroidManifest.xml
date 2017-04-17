@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.zapek.android.submarinereader"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+	<uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+	<uses-permission android:name="com.android.vending.BILLING"/>
+
+	<application
+		android:name=".application.Application"
+		android:allowBackup="false"
+		android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name"
+		android:supportsRtl="false"
+		android:theme="@style/AppTheme">
+		<activity
+			android:name=".activities.ArticleListActivity"
+			android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+		<activity
+			android:name=".activities.ArticleDetailActivity"
+			android:parentActivityName=".activities.ArticleListActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".activities.ArticleListActivity"/>
+		</activity>
+		<activity
+			android:name=".activities.SettingsActivity"
+			android:label="Settings"
+			android:parentActivityName=".activities.ArticleListActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".activities.ArticleListActivity"/>
+		</activity>
+		<activity
+			android:name=".activities.NetworkSettingsActivity"
+			android:label="Network Settings"
+			android:parentActivityName=".activities.SettingsActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".activities.SettingsActivity"/>
+			<intent-filter>
+				<action android:name="android.intent.action.MANAGE_NETWORK_USAGE"/>
+				<category android:name="android.intent.category.DEFAULT"/>
+			</intent-filter>
+		</activity>
+		<activity
+			android:name=".activities.DonationActivity"
+			android:label="Donation"
+			android:parentActivityName=".activities.SettingsActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".activities.SettingsActivity"/>
+		</activity>
+		<activity
+			android:name=".activities.AboutActivity"
+			android:label="About"
+			android:parentActivityName=".activities.ArticleListActivity">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".activities.ArticleListActivity"/>
+		</activity>
+
+		<service
+			android:name=".sync.SyncService"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.content.SyncAdapter"/>
+			</intent-filter>
+			<meta-data
+				android:name="android.content.SyncAdapter"
+				android:resource="@xml/syncadapter"/>
+		</service>
+		<service
+			android:name=".sync.AuthenticationService"
+			android:exported="false">
+			<intent-filter>
+				<action android:name="android.accounts.AccountAuthenticator"/>
+			</intent-filter>
+			<meta-data
+				android:name="android.accounts.AccountAuthenticator"
+				android:resource="@xml/authenticator"/>
+		</service>
+
+		<provider
+			android:name=".db.DataProvider"
+			android:authorities="${applicationId}"
+			android:enabled="true"
+			android:exported="false"
+			android:label="@string/entries"
+			android:syncable="true"/>
+		<!-- Opt out of Google analysis (on by default? do no evil... yeah, right) -->
+		<meta-data
+			android:name="android.webkit.WebView.MetricsOptOut"
+			android:value="true"/>
+		<!-- Support these new iPhone-5 like tall devices -->
+		<meta-data
+			android:name="android.max_aspect"
+			android:value="2.1"/>
+		<!-- Samsung multi window -->
+		<uses-library
+			android:required="false"
+			android:name="com.sec.android.app.multiwindow"/>
+		<meta-data
+			android:name="com.sec.android.support.multiwindow"
+			android:value="true"/>
+	</application>
+</manifest>

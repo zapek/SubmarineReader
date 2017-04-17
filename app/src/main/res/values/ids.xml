@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="nav_connection"/>
+    <item type="id" name="nav_session"/>
+    <item type="id" name="nav_contact"/>
+    <item type="id" name="nav_dashboard"/>
+    <item type="id" name="nav_webview"/>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceScreen
+		android:key="networkSettings"
+	    android:title="Data usage"
+	    android:summary="Limit network access in case of poor data connectivity" />
+	<PreferenceScreen
+		android:key="donation"
+	    android:title="Make a donation"
+	    android:summary="Send a donation to the author to encourage him"/>
+	<PreferenceScreen
+		android:key="sendLog"
+	    android:title="Send bugreport"
+	    android:summary="Take an internal snapshot of the app and sends the log for debugging"/>
+</PreferenceScreen>
