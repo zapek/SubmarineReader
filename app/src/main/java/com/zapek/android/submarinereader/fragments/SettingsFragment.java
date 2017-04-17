@@ -28,6 +28,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.zapek.android.submarinereader.BuildConfig;
 import com.zapek.android.submarinereader.R;
@@ -68,7 +69,7 @@ public class SettingsFragment extends PreferenceFragment
 			}
 		}
 
-		if (!BuildConfig.donation || getPreferenceManager().getSharedPreferences().contains(Settings.DONATION_SKU))
+		if (TextUtils.isEmpty(BuildConfig.IAB_KEY) || getPreferenceManager().getSharedPreferences().contains(Settings.DONATION_SKU))
 		{
 			Preference preference = findPreference("donation");
 			if (preference != null)

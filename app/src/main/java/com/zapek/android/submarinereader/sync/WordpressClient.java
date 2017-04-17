@@ -324,6 +324,20 @@ public class WordpressClient
 		Document document = Jsoup.parse(post.getContent());
 		if (syncImages)
 		{
+			/*
+			 * Remove elements styles when their width if set
+			 * with pixel width.
+			 */
+			Elements styles = document.select("[style*=width]");
+			for (Element style : styles)
+			{
+				String styleString = style.attr("style");
+				if (styleString.contains("px"))
+				{
+					style.removeAttr("style");
+				}
+			}
+
 			Elements imgs = document.select("img");
 			for (int i = 0; i < imgs.size(); i++)
 			{

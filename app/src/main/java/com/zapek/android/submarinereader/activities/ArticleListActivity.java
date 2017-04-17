@@ -38,6 +38,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -133,7 +134,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 			navigationPosition = savedInstanceState.getInt(STATE_NAVIGATION_POSITION);
 		}
 
-		if (!sharedPreferences.contains(Settings.DONATION_SKU))
+		if (!sharedPreferences.contains(Settings.DONATION_SKU) && !TextUtils.isEmpty(BuildConfig.IAB_KEY))
 		{
 			iabHelper = new IabHelper(this, BuildConfig.IAB_KEY);
 			iabHelper.enableDebugLogging(BuildConfig.logging);

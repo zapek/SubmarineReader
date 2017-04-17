@@ -92,7 +92,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if (!sharedPreferences.contains(Settings.DONATION_SKU))
+		if (!sharedPreferences.contains(Settings.DONATION_SKU) && !TextUtils.isEmpty(BuildConfig.IAB_KEY))
 		{
 			iabHelper = new IabHelper(this, BuildConfig.IAB_KEY);
 			iabHelper.enableDebugLogging(BuildConfig.logging);
