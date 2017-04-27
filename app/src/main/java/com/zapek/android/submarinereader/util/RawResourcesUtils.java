@@ -21,6 +21,7 @@
 package com.zapek.android.submarinereader.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,5 +50,10 @@ public class RawResourcesUtils
 			Log.d("error while reading license: " + e);
 		}
 		return out.toString();
+	}
+
+	public static int getRawResourceId(Context context, String name)
+	{
+		return context.getResources().getIdentifier(name, "raw", context.getPackageName());
 	}
 }

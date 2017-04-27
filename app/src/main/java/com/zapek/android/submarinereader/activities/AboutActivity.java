@@ -93,7 +93,18 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 		}
 
 		TextView licenseText = (TextView) findViewById(R.id.license);
-		licenseText.setText(Html.fromHtml(RawResourcesUtils.getRawResourceAsString(this, R.raw.license)));
+
+		String license = "";
+
+		int copyrightId = RawResourcesUtils.getRawResourceId(this, "copyright");
+		if (copyrightId != 0)
+		{
+			license += RawResourcesUtils.getRawResourceAsString(this, copyrightId);
+		}
+
+		license += RawResourcesUtils.getRawResourceAsString(this, R.raw.license);
+
+		licenseText.setText(Html.fromHtml(license));
 		licenseText.setMovementMethod(LinkMovementMethod.getInstance());
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
