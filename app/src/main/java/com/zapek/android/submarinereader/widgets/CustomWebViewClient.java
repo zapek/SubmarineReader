@@ -20,9 +20,11 @@
 
 package com.zapek.android.submarinereader.widgets;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -46,8 +48,18 @@ public class CustomWebViewClient extends WebViewClient
 			Log.d("loading url: " + url);
 			Uri uri = Uri.parse(url);
 
-			view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
-
+			if (!TextUtils.equals(uri.getScheme(), "file")) /* a file:// link won't work in an external app, and crash on Android N+ */
+			{
+				try
+				{
+					view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
+				}
+				catch (ActivityNotFoundException e)
+				{
+					/* XXX: show a requester or so */
+					return true;
+				}
+			}
 			return true;
 		}
 		return !PreferenceManager.getDefaultSharedPreferences(view.getContext()).getBoolean(Settings.DIRECT_NETWORK, Settings.DIRECT_NETWORK_DEFAULT);
