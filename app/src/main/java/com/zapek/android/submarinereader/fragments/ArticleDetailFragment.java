@@ -201,7 +201,16 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 		if (cursor.moveToFirst())
 		{
 			final String title = cursor.getString(cursor.getColumnIndex(PostColumns.TITLE));
-			final String content = cursor.getString(cursor.getColumnIndex(PostColumns.CONTENT));
+			/*final*/ String content;
+
+			try
+			{
+				content = cursor.getString(cursor.getColumnIndex(PostColumns.CONTENT));
+			}
+			catch (IllegalStateException e)
+			{
+				content = "Post size exceeded"; /* XXX: this is an ugly fix until I find something better */
+			}
 
 			starred = cursor.getInt(cursor.getColumnIndex(PostColumns.STARRED)) == 1;
 
