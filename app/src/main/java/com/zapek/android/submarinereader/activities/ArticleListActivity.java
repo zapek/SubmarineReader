@@ -172,6 +172,8 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 			case REQUEST_DONATE:
 			{
+				sharedPreferences.edit().putLong(Settings.DONATION_INSTALL_TIME, 0).apply(); /* shut it */
+
 				Intent donationIntent = new Intent(this, DonationActivity.class);
 				startActivity(donationIntent);
 			}
@@ -189,6 +191,12 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 				sharedPreferences.edit().putBoolean(Settings.SHOW_NETWORK_SETTINGS, false).apply();
 				SyncUtils.setSyncedAutomatically(true);
 				SyncUtils.manualSync();
+			}
+			break;
+
+			case REQUEST_DONATE:
+			{
+				sharedPreferences.edit().putLong(Settings.DONATION_INSTALL_TIME, 0).apply(); /* shut it */
 			}
 			break;
 		}
