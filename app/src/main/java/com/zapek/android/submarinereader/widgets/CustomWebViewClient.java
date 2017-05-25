@@ -27,8 +27,10 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.zapek.android.submarinereader.BuildConfig;
+import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.util.Log;
 
@@ -56,7 +58,7 @@ public class CustomWebViewClient extends WebViewClient
 				}
 				catch (ActivityNotFoundException e)
 				{
-					/* XXX: show a requester or so */
+					Toast.makeText(view.getContext(), R.string.no_application_found, Toast.LENGTH_LONG).show();
 					return true;
 				}
 			}

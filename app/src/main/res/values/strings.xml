@@ -55,4 +55,5 @@
         <item>Recent</item>
         <item>Starred</item>
     </string-array>
+	<string name="no_application_found">No application found to handle this link</string>
 </resources>
