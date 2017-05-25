@@ -35,6 +35,9 @@
 	<string name="donation_thankyou">Thank you!</string>
 	<string name="donation_reason">If you like using this app, please consider making a donation to the author. With your support, I\'ll be able to bring improvements and new features.</string>
 	<string name="donation_help_with">Help me with:</string>
+	<string name="donation_requester">You\'ve been using this app for 2 weeks. Please consider making a donation to help support its continuous development.\nNote: this requester will not show again, whichever your decision.</string>
+	<string name="donation_requester_positive">Let\'s go!</string>
+	<string name="donation_requester_negative">No</string>
 	<string name="sku_coffee_ask">a coffee</string>
 	<string name="sku_dinner_ask">some dinner</string>
 	<string name="sku_rent_ask">my rent</string>
@@ -45,7 +48,7 @@
 	<string name="alert_slow_network">Slow network detected. Review the settings to make sure the bandwidth usage is optimal.</string>
 	<string name="alert_slow_network_review">Review</string>
 	<string name="alert_slow_network_not_now">Not now</string>
-	<string name="ok">Ok</string>
+	<string name="ok">OK</string>
 	<string name="modified">%1$s (modified: %2$s)</string>
 	<string name="no_articles">No articles</string>
 	<string name="no_new_articles">No new articles</string>

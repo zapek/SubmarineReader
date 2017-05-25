@@ -39,6 +39,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +64,7 @@ import com.zapek.android.submarinereader.util.iab.Purchase;
 public class ArticleListActivity extends AppCompatActivity implements ArticleListFragment.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, AlertRequester.AlertDialogListener, IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
 {
 	private static final int REQUEST_REVIEW_SETTINGS = 1;
+	private static final int REQUEST_DONATE = 2;
 
 	private static final int ACTIVITY_RESULT_SYNC = 1;
 
@@ -157,18 +159,39 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog, int returnCode, long userData)
 	{
-		sharedPreferences.edit().putBoolean(Settings.SHOW_NETWORK_SETTINGS, false).apply();
+		switch (returnCode)
+		{
+			case REQUEST_REVIEW_SETTINGS:
+			{
+				sharedPreferences.edit().putBoolean(Settings.SHOW_NETWORK_SETTINGS, false).apply();
 
-		Intent intent = new Intent(this, NetworkSettingsActivity.class);
-		startActivityForResult(intent, ACTIVITY_RESULT_SYNC);
+				Intent intent = new Intent(this, NetworkSettingsActivity.class);
+				startActivityForResult(intent, ACTIVITY_RESULT_SYNC);
+			}
+			break;
+
+			case REQUEST_DONATE:
+			{
+				Intent donationIntent = new Intent(this, DonationActivity.class);
+				startActivity(donationIntent);
+			}
+			break;
+		}
 	}
 
 	@Override
 	public void onDialogNegativeClick(DialogFragment dialog, int returnCode, long userData)
 	{
-		sharedPreferences.edit().putBoolean(Settings.SHOW_NETWORK_SETTINGS, false).apply();
-		SyncUtils.setSyncedAutomatically(true);
-		SyncUtils.manualSync();
+		switch (returnCode)
+		{
+			case REQUEST_REVIEW_SETTINGS:
+			{
+				sharedPreferences.edit().putBoolean(Settings.SHOW_NETWORK_SETTINGS, false).apply();
+				SyncUtils.setSyncedAutomatically(true);
+				SyncUtils.manualSync();
+			}
+			break;
+		}
 	}
 
 	@Override
@@ -375,6 +398,24 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 				if (sku != null)
 				{
 					sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
+				}
+				else
+				{
+					if (sharedPreferences.contains(Settings.DONATION_INSTALL_TIME))
+					{
+						long installTime = sharedPreferences.getLong(Settings.DONATION_INSTALL_TIME, 0);
+						if (installTime != 0)
+						{
+							if (Math.abs(System.currentTimeMillis() - installTime) > DateUtils.WEEK_IN_MILLIS * 2)
+							{
+								AlertRequester.confirm(this, getString(R.string.donation_requester), getString(R.string.donation_requester_positive), getString(R.string.donation_requester_negative), REQUEST_DONATE, 0);
+							}
+						}
+					}
+					else
+					{
+						sharedPreferences.edit().putLong(Settings.DONATION_INSTALL_TIME, System.currentTimeMillis()).apply();
+					}
 				}
 			}
 			else

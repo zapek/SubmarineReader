@@ -37,4 +37,5 @@ public class Settings
 	public static final boolean SYNC_FORCE_UPDATE_DEFAULT = false;
 
 	public static final String DONATION_SKU = "donationSku";
+	public static final String DONATION_INSTALL_TIME = "donationInstallTime";
 }
