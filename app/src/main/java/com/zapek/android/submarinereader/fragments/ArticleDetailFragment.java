@@ -200,26 +200,26 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	{
 		if (cursor.moveToFirst())
 		{
-			final String title = cursor.getString(cursor.getColumnIndex(PostColumns.TITLE));
-			/*final*/ String content;
+			String content;
 
 			try
 			{
-				content = cursor.getString(cursor.getColumnIndex(PostColumns.CONTENT));
+				final String title = cursor.getString(cursor.getColumnIndex(PostColumns.TITLE));
+				/*final String*/ content = cursor.getString(cursor.getColumnIndex(PostColumns.CONTENT));
+
+				starred = cursor.getInt(cursor.getColumnIndex(PostColumns.STARRED)) == 1;
+
+				shareUrl = cursor.getString(cursor.getColumnIndex(PostColumns.LINK));
+
+				getActivity().setTitle(title);
+
+				String subTitle = getCreatedModifiedString(getContext(), cursor.getLong(cursor.getColumnIndex(PostColumns.CREATED)), cursor.getLong(cursor.getColumnIndex(PostColumns.MODIFIED)));
+				((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(subTitle);
 			}
 			catch (IllegalStateException e)
 			{
-				content = "Post size exceeded"; /* XXX: this is an ugly fix until I find something better */
+				content = "Article size exceeded (will be fixed in a later release, sorry)";
 			}
-
-			starred = cursor.getInt(cursor.getColumnIndex(PostColumns.STARRED)) == 1;
-
-			shareUrl = cursor.getString(cursor.getColumnIndex(PostColumns.LINK));
-
-			getActivity().setTitle(title);
-
-			String subTitle = getCreatedModifiedString(getContext(), cursor.getLong(cursor.getColumnIndex(PostColumns.CREATED)), cursor.getLong(cursor.getColumnIndex(PostColumns.MODIFIED)));
-			((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle(subTitle);
 
 			/*
 			 * The following allows to set the encoding and open local files (assets).
