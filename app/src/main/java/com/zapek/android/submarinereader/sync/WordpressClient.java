@@ -33,7 +33,6 @@ import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import android.util.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,7 +55,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -260,13 +258,6 @@ public class WordpressClient
 		syncResult.stats.numInserts++;
 	}
 
-	private void addPosts(List<Post> posts) throws RemoteException
-	{
-		Log.d("adding entries as bulk");
-		AddAttachedMedia(posts);
-		syncResult.stats.numInserts += contentProviderClient.bulkInsert(DataProvider.CONTENT_URI, Post.toContentValuesArray(posts));
-	}
-
 	private void updatePost(Post post) throws RemoteException
 	{
 		Log.d("updating entry " + post.getId());
@@ -284,18 +275,10 @@ public class WordpressClient
 		syncResult.stats.numDeletes++;
 	}
 
-	private void AddAttachedMedia(List<Post> posts)
+	private boolean AddAttachedMedia(Post post)
 	{
-		for (int i = 0; i < posts.size(); i++)
-		{
-			SyncProgress.syncProgress(context, i + 1, posts.size());
-			AddAttachedMedia(posts.get(i));
-		}
-	}
-
-	private void AddAttachedMedia(Post post)
-	{
-		boolean hasMedia = false;
+		boolean success = true;
+		boolean hasFeaturedMedia = false;
 
 		if (syncImages && post.getMediaId() > 0)
 		{
@@ -312,12 +295,13 @@ public class WordpressClient
 				{
 					Media media = response.body();
 
-					hasMedia = writeImageMedia(media, post.getId());
+					hasFeaturedMedia = writeImageMedia(media, post.getId());
 				}
 			}
 			catch (IOException e)
 			{
 				Log.d("failed to fetch media: " + e.getMessage());
+				success = false;
 			}
 		}
 
@@ -352,37 +336,17 @@ public class WordpressClient
 				{
 					Log.d("downloading image from " + src);
 
-					Request request = new Request.Builder()
-						.url(src)
-						.build();
-
-					try
+					/*
+					 * Note that if there's no featured media, we'll use the first image
+					 * as one.
+					 */
+					if (writeImageMedia(src, post.getId(), i + (hasFeaturedMedia ? 1 : 0)))
 					{
-						okhttp3.Response response = okHttpClient.newCall(request).execute();
-
-						if (response.isSuccessful())
-						{
-							Log.d("content-type: " + response.header("Content-Type"));
-							String contentType = validateContentType(response.header("Content-Type"));
-
-							if (!TextUtils.isEmpty(contentType))
-							{
-								byte[] body = response.body().bytes();
-								img.attr("src", getDataUri(contentType, body));
-
-								if (i == 0 && !hasMedia)
-								{
-									FileOutputStream out = context.openFileOutput(Constants.MEDIA_FILE_PREFIX + post.getId(), Context.MODE_PRIVATE);
-									out.write(body);
-									out.close();
-								}
-							}
-							/* XXX */
-						}
+						img.attr("src", getMediaFileUrl(post.getId(), i + (hasFeaturedMedia ? 1 : 0)));
 					}
-					catch (IOException | OutOfMemoryError e)
+					else
 					{
-						Log.d("failed to download image: " + e.getMessage());
+						success = false;
 					}
 				}
 			}
@@ -406,6 +370,8 @@ public class WordpressClient
 		head.append("<script type='text/javascript' src='file:///android_asset/js/jquery-3.1.1.min.js'></script>");
 		head.append("<script type='text/javascript' src='file:///android_asset/js/tweaks.js'></script>");
 		post.setContent(document.toString());
+
+		return success;
 	}
 
 	private boolean writeImageMedia(Media media, long id)
@@ -430,7 +396,7 @@ public class WordpressClient
 
 						if (!TextUtils.isEmpty(mediaUrl))
 						{
-							result = writeImageMedia(mediaUrl, (int) id);
+							result = writeImageMedia(mediaUrl, id, 0);
 						}
 					}
 				}
@@ -439,7 +405,7 @@ public class WordpressClient
 		return result;
 	}
 
-	private boolean writeImageMedia(String url, int id)
+	private boolean writeImageMedia(String url, long id, int index)
 	{
 		boolean result = false;
 
@@ -455,7 +421,7 @@ public class WordpressClient
 			{
 				if (!TextUtils.isEmpty(validateContentType(response.header("Content-Type"))))
 				{
-					BufferedSink sink = Okio.buffer(Okio.sink(new File(context.getFilesDir(), Constants.MEDIA_FILE_PREFIX + id)));
+					BufferedSink sink = Okio.buffer(Okio.sink(new File(context.getFilesDir(), getMediaFilename(id, index))));
 					sink.writeAll(response.body().source());
 					sink.close();
 					result = true;
@@ -469,14 +435,32 @@ public class WordpressClient
 		return result;
 	}
 
-	private void RemoveAttachedMedia(long id)
+	private String getMediaFilename(long id, int index)
 	{
-		context.deleteFile(Constants.MEDIA_FILE_PREFIX + id);
+		if (index == 0)
+		{
+			return Constants.MEDIA_FILE_PREFIX + id;
+		}
+		else
+		{
+			return Constants.MEDIA_FILE_PREFIX + id + "_" + index;
+		}
 	}
 
-	static private String getDataUri(String mimeType, byte[] input)
+	private String getMediaFileUrl(long id, int index)
 	{
-		return "data:" + mimeType + ";base64," + Base64.encodeToString(input, Base64.DEFAULT);
+		return "file:///" + context.getFilesDir() + "/" + getMediaFilename(id, index);
+	}
+
+	private void RemoveAttachedMedia(long id)
+	{
+
+		context.deleteFile(Constants.MEDIA_FILE_PREFIX + id);
+
+		for (int i = 1; i < 100; i++) /* Yes this is silly. There should be a way to retry posts with failed images */
+		{
+			context.deleteFile(Constants.MEDIA_FILE_PREFIX + id + "_" + i);
+		}
 	}
 
 	static private String validateContentType(String contentType)
