@@ -25,7 +25,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -49,6 +51,7 @@ import android.widget.Toast;
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.db.tables.PostColumns;
 import com.zapek.android.submarinereader.settings.Settings;
+import com.zapek.android.submarinereader.util.JavaScriptInterface;
 import com.zapek.android.submarinereader.widgets.CustomWebChromeClient;
 import com.zapek.android.submarinereader.widgets.CustomWebViewClient;
 
@@ -102,6 +105,11 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 		webSettings.setCacheMode(directNetwork ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE);
 		webView.setWebViewClient(new CustomWebViewClient());
 		webView.setWebChromeClient(new CustomWebChromeClient(this));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+		{
+			webView.addJavascriptInterface(new JavaScriptInterface(view.getContext()), "SubmarineReader");
+		}
+		webView.setBackgroundColor(Color.TRANSPARENT); /* avoids flickers in night mode */
 	}
 
 	@Override

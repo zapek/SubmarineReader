@@ -22,6 +22,8 @@ package com.zapek.android.submarinereader.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -106,6 +108,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
 		licenseText.setText(Html.fromHtml(license));
 		licenseText.setMovementMethod(LinkMovementMethod.getInstance());
+		setLinkColor(licenseText);
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String sku = sharedPreferences.getString(Settings.DONATION_SKU, "");
@@ -178,5 +181,15 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 		ssb.append(s);
 		ssb.setSpan(new URLSpan("#"), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		textView.setText(ssb, TextView.BufferType.SPANNABLE);
+		setLinkColor(textView);
+	}
+
+	static private void setLinkColor(TextView textView)
+	{
+		int currentNightMode = textView.getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+		if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
+		{
+			textView.setLinkTextColor(Color.parseColor("#00afff"));
+		}
 	}
 }

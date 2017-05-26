@@ -37,7 +37,7 @@ public class Application extends android.app.Application
 {
 	static
 	{
-		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO); /* XXX: make that settable */
 	}
 
 	@Override

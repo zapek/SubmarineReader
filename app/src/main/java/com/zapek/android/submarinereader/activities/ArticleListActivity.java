@@ -37,6 +37,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -45,6 +46,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.zapek.android.submarinereader.BuildConfig;
@@ -61,7 +63,7 @@ import com.zapek.android.submarinereader.util.iab.IabResult;
 import com.zapek.android.submarinereader.util.iab.Inventory;
 import com.zapek.android.submarinereader.util.iab.Purchase;
 
-public class ArticleListActivity extends AppCompatActivity implements ArticleListFragment.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, AlertRequester.AlertDialogListener, IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener
+public class ArticleListActivity extends AppCompatActivity implements ArticleListFragment.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, AlertRequester.AlertDialogListener, IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener, View.OnClickListener
 {
 	private static final int REQUEST_REVIEW_SETTINGS = 1;
 	private static final int REQUEST_DONATE = 2;
@@ -124,6 +126,10 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
+
+		View headerView = navigationView.getHeaderView(0);
+		ImageView nightView = (ImageView) headerView.findViewById(R.id.night);
+		nightView.setOnClickListener(this);
 
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPreferences.getBoolean(Settings.SHOW_NETWORK_SETTINGS, false))
@@ -320,6 +326,19 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	public void onNothingSelected(AdapterView<?> parent)
 	{
 		/* not used */
+	}
+
+	@Override
+	public void onClick(View v)
+	{
+		switch (v.getId())
+		{
+			case R.id.night:
+				int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+				AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_YES ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+				recreate();
+				break;
+		}
 	}
 
 	private class SyncStatusReceiver extends BroadcastReceiver {

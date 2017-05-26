@@ -23,7 +23,6 @@ package com.zapek.android.submarinereader.fragments;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -64,8 +63,6 @@ import com.zapek.android.submarinereader.util.SyncUtils;
 import java.io.File;
 import java.util.Arrays;
 
-import jp.wasabeef.picasso.transformations.gpu.SepiaFilterTransformation;
-
 public class ArticleListFragment extends AbsListFragment implements SearchView.OnQueryTextListener, SimpleCursorAdapter.ViewBinder, LoaderManager.LoaderCallbacks<Cursor>, AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener
 {
 	public interface OnItemSelectedListener
@@ -83,7 +80,6 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	private View progressContainer;
 	private View listContainer;
 	private SwipeRefreshLayout swipeRefreshLayout;
-	private int currentNightMode;
 
 	private static final String STATE_MODE = "mode";
 	private int mode;
@@ -151,8 +147,6 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		super.onActivityCreated(savedInstanceState);
 
 		Activity activity = getActivity();
-
-		currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
 		setHasOptionsMenu(true);
 
@@ -390,10 +384,6 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 				RequestCreator request = file.exists() ? picasso.load(file) : picasso.load(R.mipmap.ic_launcher);
 				request.fit()
 					.centerInside();
-					if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
-					{
-						request.transform(new SepiaFilterTransformation(view.getContext(), 0.5f));
-					}
 					request.into((ImageView) view);
 				return true;
 
