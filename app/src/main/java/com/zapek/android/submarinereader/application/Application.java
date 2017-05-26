@@ -25,6 +25,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.zapek.android.submarinereader.BuildConfig;
 import com.zapek.android.submarinereader.settings.Settings;
@@ -34,6 +35,11 @@ import com.zapek.android.submarinereader.util.SyncUtils;
 
 public class Application extends android.app.Application
 {
+	static
+	{
+		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+	}
+
 	@Override
 	public void onCreate()
 	{

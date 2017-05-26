@@ -96,7 +96,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 		boolean directNetwork = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(Settings.DIRECT_NETWORK, Settings.DIRECT_NETWORK_DEFAULT);
 
 		WebSettings webSettings = webView.getSettings();
-		webSettings.setJavaScriptEnabled(directNetwork);
+		webSettings.setJavaScriptEnabled(true);
 		webSettings.setDomStorageEnabled(directNetwork);
 		webSettings.setBlockNetworkLoads(!directNetwork);
 		webSettings.setCacheMode(directNetwork ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE);
