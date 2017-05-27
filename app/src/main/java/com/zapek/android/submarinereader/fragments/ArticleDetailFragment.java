@@ -20,6 +20,7 @@
 
 package com.zapek.android.submarinereader.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -91,6 +92,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 		return view;
 	}
 
+	@SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
 	{

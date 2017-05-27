@@ -20,14 +20,7 @@
 
 package com.zapek.android.submarinereader.application;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.ContentResolver;
-import android.os.Bundle;
-
-import com.zapek.android.submarinereader.BuildConfig;
-import com.zapek.android.submarinereader.util.Log;
-
+@SuppressWarnings("EmptyMethod")
 public class Init
 {
 	public static void initCrashReporter(Application app) {
@@ -38,6 +31,7 @@ public class Init
 
 	}
 
+	@SuppressWarnings("SameReturnValue")
 	public static boolean isCrashReporterEnabled()
 	{
 		return false;

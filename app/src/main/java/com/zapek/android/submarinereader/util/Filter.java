@@ -169,7 +169,7 @@ public class Filter implements Parcelable
 	void readFromParcel(Parcel in)
 	{
 		hasChanged = in.readInt() == 1;
-		bundle = in.readBundle();
+		bundle = in.readBundle(getClass().getClassLoader());
 	}
 
 	public static final Parcelable.Creator<Filter> CREATOR = new Parcelable.Creator<Filter>()

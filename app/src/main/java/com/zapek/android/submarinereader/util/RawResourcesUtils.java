@@ -21,7 +21,6 @@
 package com.zapek.android.submarinereader.util;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
