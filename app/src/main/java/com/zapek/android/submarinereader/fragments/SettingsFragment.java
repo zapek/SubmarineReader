@@ -23,6 +23,7 @@ package com.zapek.android.submarinereader.fragments;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -73,6 +74,15 @@ public class SettingsFragment extends PreferenceFragment
 		if (TextUtils.isEmpty(BuildConfig.IAB_KEY) || getPreferenceManager().getSharedPreferences().contains(Settings.DONATION_SKU))
 		{
 			Preference preference = findPreference("donation");
+			if (preference != null)
+			{
+				getPreferenceScreen().removePreference(preference);
+			}
+		}
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
+		{
+			Preference preference = findPreference("autoNightMode");
 			if (preference != null)
 			{
 				getPreferenceScreen().removePreference(preference);

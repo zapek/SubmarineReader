@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -133,8 +134,15 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 		View headerView = navigationView.getHeaderView(0);
 		ImageView nightButton = (ImageView) headerView.findViewById(R.id.night);
-		nightButton.setImageResource(NightModeUtils.isInNightMode(this) ? R.drawable.ic_nightmode_day_24dp : R.drawable.ic_nightmode_night_24dp);
-		nightButton.setOnClickListener(this);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+		{
+			nightButton.setImageResource(NightModeUtils.isInNightMode(this) ? R.drawable.ic_nightmode_day_24dp : R.drawable.ic_nightmode_night_24dp);
+			nightButton.setOnClickListener(this);
+		}
+		else
+		{
+			nightButton.setVisibility(View.GONE);
+		}
 
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPreferences.getBoolean(Settings.SHOW_NETWORK_SETTINGS, false))
