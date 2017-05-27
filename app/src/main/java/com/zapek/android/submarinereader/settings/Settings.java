@@ -24,6 +24,9 @@ public class Settings
 {
 	public static final String SHOW_NETWORK_SETTINGS = "showNetworkSettings";
 
+	public static final String AUTO_NIGHT_MODE = "autoNightMode";
+	public static final boolean AUTO_NIGHT_MODE_DEFAULT = false;
+
 	public static final String DIRECT_NETWORK = "directNetwork";
 	public static final boolean DIRECT_NETWORK_DEFAULT = true;
 

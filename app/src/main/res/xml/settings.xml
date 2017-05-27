@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<CheckBoxPreference
+		android:defaultValue="false"
+	    android:key="autoNightMode"
+	    android:summary="Use a darker interface during night hours"
+	    android:title="Automatic night mode" />
 	<PreferenceScreen
 		android:key="networkSettings"
 	    android:title="Data usage"

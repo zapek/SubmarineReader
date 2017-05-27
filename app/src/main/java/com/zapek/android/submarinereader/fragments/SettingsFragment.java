@@ -28,6 +28,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 
 import com.zapek.android.submarinereader.BuildConfig;
@@ -96,6 +97,12 @@ public class SettingsFragment extends PreferenceFragment
 			case "donation":
 				Intent donationIntent = new Intent(getActivity(), DonationActivity.class);
 				startActivity(donationIntent);
+				break;
+
+			case "autoNightMode":
+				boolean autoNightMode = preference.getSharedPreferences().getBoolean(Settings.AUTO_NIGHT_MODE, Settings.AUTO_NIGHT_MODE_DEFAULT);
+				AppCompatDelegate.setDefaultNightMode(autoNightMode ? AppCompatDelegate.MODE_NIGHT_AUTO : AppCompatDelegate.MODE_NIGHT_NO);
+				getActivity().recreate();
 				break;
 		}
 		return super.onPreferenceTreeClick(preferenceScreen, preference);

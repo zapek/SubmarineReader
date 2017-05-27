@@ -57,6 +57,7 @@ import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.sync.SyncProgress;
 import com.zapek.android.submarinereader.util.AlertRequester;
 import com.zapek.android.submarinereader.util.Log;
+import com.zapek.android.submarinereader.util.NightModeUtils;
 import com.zapek.android.submarinereader.util.SyncUtils;
 import com.zapek.android.submarinereader.util.iab.IabHelper;
 import com.zapek.android.submarinereader.util.iab.IabResult;
@@ -78,6 +79,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	private ArticleListFragment articleListFragment;
 	private ActionBarDrawerToggle actionBarDrawerToggle;
 	private DrawerLayout drawerLayout;
+	private boolean nightMode;
 
 	private IabHelper iabHelper;
 
@@ -95,6 +97,8 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		articleListFragment = (ArticleListFragment) getSupportFragmentManager().findFragmentById(R.id.articles);
+
+		nightMode = NightModeUtils.isInNightMode(this);
 
 		Spinner spinner = (Spinner) toolbar.findViewById(R.id.spinner);
 		ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.navigation, R.layout.support_simple_spinner_dropdown_item);
@@ -128,8 +132,9 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		navigationView.setNavigationItemSelectedListener(this);
 
 		View headerView = navigationView.getHeaderView(0);
-		ImageView nightView = (ImageView) headerView.findViewById(R.id.night);
-		nightView.setOnClickListener(this);
+		ImageView nightButton = (ImageView) headerView.findViewById(R.id.night);
+		nightButton.setImageResource(NightModeUtils.isInNightMode(this) ? R.drawable.ic_nightmode_day_24dp : R.drawable.ic_nightmode_night_24dp);
+		nightButton.setOnClickListener(this);
 
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		if (sharedPreferences.getBoolean(Settings.SHOW_NETWORK_SETTINGS, false))
@@ -276,6 +281,10 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	protected void onResume()
 	{
 		super.onResume();
+		if (nightMode != NightModeUtils.isInNightMode(this))
+		{
+			recreate();
+		}
 		syncStatusReceiver = new SyncStatusReceiver();
 
 		IntentFilter filter = new IntentFilter();
@@ -296,6 +305,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 			LocalBroadcastManager.getInstance(this).unregisterReceiver(syncStatusReceiver);
 			syncStatusReceiver = null;
 		}
+		nightMode = NightModeUtils.isInNightMode(this);
 	}
 
 	@Override
@@ -334,8 +344,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		switch (v.getId())
 		{
 			case R.id.night:
-				int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-				AppCompatDelegate.setDefaultNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_YES ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+				AppCompatDelegate.setDefaultNightMode(NightModeUtils.isInNightMode(this) ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
 				recreate();
 				break;
 		}

@@ -1,7 +1,6 @@
 package com.zapek.android.submarinereader.util;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.webkit.JavascriptInterface;
 
 /**
@@ -20,7 +19,6 @@ public class JavaScriptInterface
 	@JavascriptInterface
 	public boolean isNightModeEnabled()
 	{
-		int currentNightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-		return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
+		return NightModeUtils.isInNightMode(context);
 	}
 }

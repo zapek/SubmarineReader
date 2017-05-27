@@ -22,7 +22,6 @@ package com.zapek.android.submarinereader.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,6 +45,7 @@ import com.zapek.android.submarinereader.Constants;
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.util.NavigationUtils;
+import com.zapek.android.submarinereader.util.NightModeUtils;
 import com.zapek.android.submarinereader.util.RawResourcesUtils;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener
@@ -186,8 +186,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
 	static private void setLinkColor(TextView textView)
 	{
-		int currentNightMode = textView.getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-		if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
+		if (NightModeUtils.isInNightMode(textView.getContext()))
 		{
 			textView.setLinkTextColor(Color.parseColor("#00afff"));
 		}

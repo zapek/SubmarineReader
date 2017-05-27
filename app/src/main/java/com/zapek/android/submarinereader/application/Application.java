@@ -35,15 +35,13 @@ import com.zapek.android.submarinereader.util.SyncUtils;
 
 public class Application extends android.app.Application
 {
-	static
-	{
-		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO); /* XXX: make that settable */
-	}
-
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
+
+		boolean autoNightMode = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Settings.AUTO_NIGHT_MODE, Settings.AUTO_NIGHT_MODE_DEFAULT);
+		AppCompatDelegate.setDefaultNightMode(autoNightMode ? AppCompatDelegate.MODE_NIGHT_AUTO : AppCompatDelegate.MODE_NIGHT_NO);
 
 		Account account = new Account(BuildConfig.accountName, BuildConfig.accountType);
 		AccountManager accountManager = AccountManager.get(this);
