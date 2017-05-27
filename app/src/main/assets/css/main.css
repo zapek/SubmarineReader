@@ -1,8 +1,10 @@
-a {
-	word-break: break-all;
-	word-break: break-word; /* webkit */
+body {
+	/* this one is supported by webkit/bink only */
+	word-break: break-word;
+
+	/* might one might work in the future. It'll insert hyphens in a nicer way */
 	-webkit-hyphens: auto;
-	hyphens: auto;
+    hyphens: auto;
 }
 
 pre {
