@@ -334,19 +334,28 @@ public class WordpressClient
 
 				if (!TextUtils.isEmpty(src))
 				{
-					Log.d("downloading image from " + src);
-
-					/*
-					 * Note that if there's no featured media, we'll use the first image
-					 * as one.
-					 */
-					if (writeImageMedia(src, post.getId(), i + (hasFeaturedMedia ? 1 : 0)))
+					if (src.startsWith("data:image"))
 					{
-						img.attr("src", getMediaFileUrl(post.getId(), i + (hasFeaturedMedia ? 1 : 0)));
+						Log.d("built-in image");
+						success = true;
 					}
 					else
 					{
-						success = false;
+
+						Log.d("downloading image from " + src);
+
+						/*
+						 * Note that if there's no featured media, we'll use the first image
+						 * as one.
+						 */
+						if (writeImageMedia(src, post.getId(), i + (hasFeaturedMedia ? 1 : 0)))
+						{
+							img.attr("src", getMediaFileUrl(post.getId(), i + (hasFeaturedMedia ? 1 : 0)));
+						}
+						else
+						{
+							success = false;
+						}
 					}
 				}
 			}

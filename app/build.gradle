@@ -27,6 +27,8 @@ if (file('external.gradle').exists())
 }
 
 android {
+	flavorDimensions "main"
+
 	signingConfigs {
 		saker {
 			storeFile file(KEYSTORE_ZAPEK_STORE_FILE)
@@ -36,7 +38,7 @@ android {
 		}
 	}
 	compileSdkVersion 25
-	buildToolsVersion '25.0.2'
+	buildToolsVersion '27.0.3'
 
 	/* default configuration */
 	defaultConfig {
@@ -68,8 +70,8 @@ android {
 		saker {
 			applicationId 'is.thesaker.reader'
 			signingConfig signingConfigs.saker
-			versionCode 2
-			versionName "1.1"
+			versionCode 4
+			versionName "1.3"
 			buildConfigField "String", "serverUrl", "\"http://thesaker.is/wp-json/wp/v2/\""
 			buildConfigField "String", "ACRAUri", "\"https://zapek.com/report/saker/\""
 			buildConfigField "String", "IAB_KEY", "\"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArNnrAa1goufmIdR+/lmiCagRO5j75BDL0TXBVhTSGuBhNXJJKfx4Tq9OoJzVGDNWy/9UpGtD0gZiFA4n1eIbjNcKKhEabB6ab3E/BA/UnKQY97gwVt5GenT55YuFaxv8CUZqMyGRmjFmyP4H0lBBdAG2WZqwgW/59Kz/xRJV2ro/IyD70aZlqrHHYz8TSD2DZ8DHaNQUHdwIhTdBs3YwzQwPebOSFhH2mYGU9sP3c47GCf1jESx6wDZyyHBy3Ee3FOkOodmkLky8fDfh56Gr58/NyzoaIwUwVIfyaXOnjbS5031UFgJcpGnb05DTA77+L74qB0Yy4/awHjA+ZBVPNQIDAQAB\""
