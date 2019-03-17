@@ -71,7 +71,10 @@ android {
 	productFlavors {
 		saker {
 			applicationId 'is.thesaker.reader'
-			signingConfig signingConfigs.saker
+			if (project.hasProperty("KEYSTORE_ZAPEK_STORE_FILE"))
+			{
+				signingConfig signingConfigs.saker
+			}
 			versionCode 4
 			versionName "1.3"
 			buildConfigField "String", "serverUrl", "\"http://thesaker.is/wp-json/wp/v2/\""
