@@ -31,7 +31,8 @@
 					android:paddingRight="8dp"
 					android:paddingTop="8dp"
 					android:scaleType="centerCrop"
-					app:srcCompat="@drawable/about_logo"/>
+					app:srcCompat="@drawable/about_logo"
+					tools:ignore="ContentDescription"/>
 			</android.support.v7.widget.CardView>
 
 			<android.support.v7.widget.CardView

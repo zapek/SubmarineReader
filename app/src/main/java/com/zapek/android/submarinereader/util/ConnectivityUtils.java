@@ -94,10 +94,7 @@ public class ConnectivityUtils
 
 		if (ni != null)
 		{
-			if (ni.isConnected())
-			{
-				return true;
-			}
+			return ni.isConnected();
 		}
 		return false;
 	}
