@@ -341,6 +341,15 @@ public class WordpressClient
 					}
 					else
 					{
+						/*
+						 * Android 9 doesn't accept HTTP anymore by default so
+						 * we force everything to HTTPS. Hopefully external
+						 * sites all implement it.
+						 */
+						if (src.startsWith("http://"))
+						{
+							src = "https://" + src.substring("http://".length());
+						}
 
 						Log.d("downloading image from " + src);
 

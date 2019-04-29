@@ -380,7 +380,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		{
 			case R.id.image:
 				File file = new File(view.getContext().getFilesDir(), Constants.MEDIA_FILE_PREFIX + cursor.getLong(columnIndex));
-				Picasso picasso = Picasso.with(view.getContext());
+				Picasso picasso = Picasso.get();
 				RequestCreator request = file.exists() ? picasso.load(file) : picasso.load(R.mipmap.ic_launcher);
 				request.fit()
 					.centerInside();
