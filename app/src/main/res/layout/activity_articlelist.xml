@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
-                                        xmlns:android="http://schemas.android.com/apk/res/android"
-                                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                                        xmlns:tools="http://schemas.android.com/tools"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        tools:openDrawer="start">
+<androidx.drawerlayout.widget.DrawerLayout android:id="@+id/drawer_layout"
+                                           xmlns:android="http://schemas.android.com/apk/res/android"
+                                           xmlns:app="http://schemas.android.com/apk/res-auto"
+                                           xmlns:tools="http://schemas.android.com/tools"
+                                           android:layout_width="match_parent"
+                                           android:layout_height="match_parent"
+                                           tools:openDrawer="start">
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical">
-		<android.support.v7.widget.Toolbar
+		<androidx.appcompat.widget.Toolbar
 			android:id="@+id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
@@ -22,7 +22,7 @@
 				android:id="@+id/spinner"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"/>
-		</android.support.v7.widget.Toolbar>
+		</androidx.appcompat.widget.Toolbar>
 		<fragment
 			android:id="@+id/articles"
 			android:name="com.zapek.android.submarinereader.fragments.ArticleListFragment"
@@ -30,7 +30,7 @@
 			android:layout_height="match_parent"
 			tools:layout="@layout/fragment_articlelist"/>
 	</LinearLayout>
-	<android.support.design.widget.NavigationView
+	<com.google.android.material.navigation.NavigationView
 		android:id="@+id/nav_view"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
@@ -38,4 +38,4 @@
 		android:fitsSystemWindows="true"
 		app:headerLayout="@layout/nav_header_main"
 		app:menu="@menu/activity_articlelist_drawer"/>
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

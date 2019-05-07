@@ -22,14 +22,15 @@ package com.zapek.android.submarinereader.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.fragments.ArticleDetailFragment;
 import com.zapek.android.submarinereader.util.NavigationUtils;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class ArticleDetailActivity extends AppCompatActivity
 {

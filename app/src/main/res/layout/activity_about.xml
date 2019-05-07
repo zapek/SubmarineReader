@@ -14,7 +14,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical">
-			<android.support.v7.widget.CardView
+			<androidx.cardview.widget.CardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginBottom="4dp"
@@ -33,9 +33,9 @@
 					android:scaleType="centerCrop"
 					app:srcCompat="@drawable/about_logo"
 					tools:ignore="ContentDescription"/>
-			</android.support.v7.widget.CardView>
+			</androidx.cardview.widget.CardView>
 
-			<android.support.v7.widget.CardView
+			<androidx.cardview.widget.CardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginBottom="4dp"
@@ -126,8 +126,8 @@
 						android:visibility="gone"
 						android:text="@string/badge_thanks"/>
 				</LinearLayout>
-			</android.support.v7.widget.CardView>
-			<android.support.v7.widget.CardView
+			</androidx.cardview.widget.CardView>
+			<androidx.cardview.widget.CardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginBottom="8dp"
@@ -158,7 +158,7 @@
 						android:typeface="monospace"
 						tools:text="(c) 2017 by Zapek Software Engineering, All Rights Reserved. All your base are belong to us. Move Zig!"/>
 				</LinearLayout>
-			</android.support.v7.widget.CardView>
+			</androidx.cardview.widget.CardView>
 		</LinearLayout>
 	</ScrollView>
 </LinearLayout>

@@ -24,7 +24,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.settings.Settings;
