@@ -24,10 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.IdRes;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +44,11 @@ import com.zapek.android.submarinereader.util.iab.Purchase;
 import com.zapek.android.submarinereader.util.iab.SkuDetails;
 
 import java.util.ArrayList;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class DonationActivity extends AppCompatActivity implements View.OnClickListener, IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener, IabHelper.OnIabPurchaseFinishedListener, RadioGroup.OnCheckedChangeListener
 {
@@ -73,18 +74,18 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 
 		setContentView(R.layout.activity_donation);
 
-		paymentGroup = (RadioGroup) findViewById(R.id.paymentGroup);
+		paymentGroup = findViewById(R.id.paymentGroup);
 		paymentGroup.setOnCheckedChangeListener(this);
-		coffeeRadio = (RadioButton) findViewById(R.id.coffee);
-		dinnerRadio = (RadioButton) findViewById(R.id.dinner);
-		rentRadio = (RadioButton) findViewById(R.id.rent);
-		donationGroup = (ViewGroup) findViewById(R.id.donationGroup);
-		thankYouGroup = (ViewGroup) findViewById(R.id.thankyouGroup);
-		errorText = (TextView) findViewById(R.id.error);
-		payButton = (Button) findViewById(R.id.pay);
+		coffeeRadio = findViewById(R.id.coffee);
+		dinnerRadio = findViewById(R.id.dinner);
+		rentRadio = findViewById(R.id.rent);
+		donationGroup = findViewById(R.id.donationGroup);
+		thankYouGroup = findViewById(R.id.thankyouGroup);
+		errorText = findViewById(R.id.error);
+		payButton = findViewById(R.id.pay);
 		payButton.setOnClickListener(this);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);

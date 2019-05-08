@@ -91,7 +91,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 		setContentView(R.layout.activity_articlelist);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -101,13 +101,13 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 		nightMode = NightModeUtils.isInNightMode(this);
 
-		Spinner spinner = (Spinner) toolbar.findViewById(R.id.spinner);
+		Spinner spinner = toolbar.findViewById(R.id.spinner);
 		ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.navigation, R.layout.support_simple_spinner_dropdown_item);
 		arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 		spinner.setAdapter(arrayAdapter);
 		spinner.setOnItemSelectedListener(this);
 
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawerLayout = findViewById(R.id.drawer_layout);
 		actionBarDrawerToggle = new ActionBarDrawerToggle(
 			this,
 			drawerLayout,
@@ -129,11 +129,11 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		};
 		drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
-		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+		NavigationView navigationView = findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(this);
 
 		View headerView = navigationView.getHeaderView(0);
-		ImageView nightButton = (ImageView) headerView.findViewById(R.id.night);
+		ImageView nightButton = headerView.findViewById(R.id.night);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{
 			nightButton.setImageResource(NightModeUtils.isInNightMode(this) ? R.drawable.ic_nightmode_day_24dp : R.drawable.ic_nightmode_night_24dp);

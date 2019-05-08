@@ -42,7 +42,7 @@ public class NetworkSettingsActivity extends AppCompatActivity implements AlertR
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_network_settings);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);

@@ -116,14 +116,14 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.fragment_articlelist, container, false);
-		count = (TextView) view.findViewById(R.id.count);
-		empty = (ViewGroup) view.findViewById(android.R.id.empty);
-		emptyText = (TextView) view.findViewById(R.id.emptyText);
+		count = view.findViewById(R.id.count);
+		empty = view.findViewById(android.R.id.empty);
+		emptyText = view.findViewById(R.id.emptyText);
 		progressContainer = view.findViewById(R.id.progressContainer);
-		progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-		syncButton = (Button) view.findViewById(R.id.sync);
+		progressBar = view.findViewById(R.id.progressBar);
+		syncButton = view.findViewById(R.id.sync);
 		listContainer = view.findViewById(R.id.listContainer);
-		swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+		swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 		return view;
 	}
 

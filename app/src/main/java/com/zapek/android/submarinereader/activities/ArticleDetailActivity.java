@@ -41,7 +41,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 
 		setContentView(R.layout.activity_articledetail);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);

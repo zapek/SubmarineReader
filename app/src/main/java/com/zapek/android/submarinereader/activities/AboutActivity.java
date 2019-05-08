@@ -58,16 +58,16 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
 		setContentView(R.layout.activity_about);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-		ImageView badgeImage = (ImageView) findViewById(R.id.badge_image);
-		TextView badgeText = (TextView) findViewById(R.id.badge_text);
+		ImageView badgeImage = findViewById(R.id.badge_image);
+		TextView badgeText = findViewById(R.id.badge_text);
 
-		TextView version = (TextView) findViewById(R.id.version);
+		TextView version = findViewById(R.id.version);
 		if (BuildConfig.BUILD_TYPE.equals("release"))
 		{
 			version.setText(BuildConfig.VERSION_NAME);
@@ -77,25 +77,25 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 			version.setText(BuildConfig.VERSION_NAME + " (" + BuildConfig.BUILD_TYPE + ")");
 		}
 
-		TextView webLink = (TextView) findViewById(R.id.web);
+		TextView webLink = findViewById(R.id.web);
 		setAsUrl(webLink, getString(R.string.web_url));
 		webLink.setOnClickListener(this);
 
-		TextView supportLink = (TextView) findViewById(R.id.support);
+		TextView supportLink = findViewById(R.id.support);
 		setAsUrl(supportLink, getString(R.string.support_email));
 		supportLink.setOnClickListener(this);
 
 		if (!TextUtils.isEmpty(getString(R.string.development_url)))
 		{
-			TextView developmentTitle = (TextView) findViewById(R.id.development_title);
-			TextView developmentLink = (TextView) findViewById(R.id.development);
+			TextView developmentTitle = findViewById(R.id.development_title);
+			TextView developmentLink = findViewById(R.id.development);
 			setAsUrl(developmentLink, getString(R.string.development_url));
 			developmentLink.setOnClickListener(this);
 			developmentTitle.setVisibility(View.VISIBLE);
 			developmentLink.setVisibility(View.VISIBLE);
 		}
 
-		TextView licenseText = (TextView) findViewById(R.id.license);
+		TextView licenseText = findViewById(R.id.license);
 
 		String license = "";
 

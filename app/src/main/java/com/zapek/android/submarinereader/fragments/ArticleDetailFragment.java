@@ -88,7 +88,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.fragment_articledetail, container, false);
-		webView = (WebView) view.findViewById(R.id.webView);
+		webView = view.findViewById(R.id.webView);
 		return view;
 	}
 
