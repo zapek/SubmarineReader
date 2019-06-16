@@ -5,11 +5,12 @@
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+	<uses-permission
+		android:name="android.permission.AUTHENTICATE_ACCOUNTS"
+		android:maxSdkVersion="22"/>
 	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
 	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 	<uses-permission android:name="android.permission.READ_SYNC_STATS"/>
-	<uses-permission android:name="com.android.vending.BILLING"/>
 
 	<application
 		android:name=".application.Application"
@@ -105,11 +106,11 @@
 		<!-- Support these new iPhone-5 like tall devices -->
 		<meta-data
 			android:name="android.max_aspect"
-			android:value="2.1"/>
+			android:value="2.5"/>
 		<!-- Samsung multi window -->
 		<uses-library
-			android:required="false"
-			android:name="com.sec.android.app.multiwindow"/>
+			android:name="com.sec.android.app.multiwindow"
+			android:required="false"/>
 		<meta-data
 			android:name="com.sec.android.support.multiwindow"
 			android:value="true"/>

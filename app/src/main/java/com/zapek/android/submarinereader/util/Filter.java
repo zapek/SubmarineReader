@@ -149,7 +149,7 @@ public class Filter implements Parcelable
 				appendToSelection(key);
 				args.add(bundle.getString(key));
 			}
-			arguments = args.size() > 0 ? args.toArray(new String[args.size()]) : null;
+			arguments = args.size() > 0 ? args.toArray(new String[0]) : null;
 		}
 	}
 

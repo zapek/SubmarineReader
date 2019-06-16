@@ -120,7 +120,7 @@ public class Post
 		{
 			contentValues.add(post.getAsContentValues());
 		}
-		return contentValues.toArray(new ContentValues[contentValues.size()]);
+		return contentValues.toArray(new ContentValues[0]);
 	}
 
 	public ContentValues getAsContentValues()

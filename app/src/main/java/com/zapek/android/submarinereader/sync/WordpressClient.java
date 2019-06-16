@@ -132,18 +132,15 @@ public class WordpressClient
 					/*
 					 * Load the local data.
 					 */
-					Cursor cursor = null;
-					HashMap<Long, ContentValues> localValues = null;
 
+					HashMap<Long, ContentValues> localValues = null;
 					String[] PROJECTION = {
 						PostColumns._ID,
-						PostColumns.MODIFIED
+						PostColumns.MODIFIED,
+						PostColumns.STARRED
 					};
-
-					try
+					try (Cursor cursor = contentProviderClient.query(DataProvider.CONTENT_URI, PROJECTION, null, null, null))
 					{
-						cursor = contentProviderClient.query(DataProvider.CONTENT_URI, PROJECTION, null, null, null);
-
 						if (cursor != null && cursor.moveToFirst())
 						{
 							localValues = new HashMap<>(cursor.getCount());
@@ -155,13 +152,6 @@ public class WordpressClient
 								localValues.put(cursor.getLong(cursor.getColumnIndex(PostColumns._ID)), localValue);
 							}
 							while (cursor.moveToNext());
-						}
-					}
-					finally
-					{
-						if (cursor != null)
-						{
-							cursor.close();
 						}
 					}
 
@@ -220,7 +210,10 @@ public class WordpressClient
 						for (HashMap.Entry<Long, ContentValues> entry : localValues.entrySet())
 						{
 							ContentValues localValue = entry.getValue();
-							deletePost(localValue.getAsLong(PostColumns._ID));
+							if (!localValue.getAsBoolean(PostColumns.STARRED))
+							{
+								deletePost(localValue.getAsLong(PostColumns._ID));
+							}
 						}
 					}
 				}

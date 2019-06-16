@@ -181,21 +181,23 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 							if (result.getResponseCode() != BillingResponseCode.OK)
 							{
 								Log.d("Failure to launch the billing flow, code: " + result.getResponseCode() + ", message: " + result.getDebugMessage());
+								showError("Couldn't launch Play Store (-1)");
 							}
 						}
 						else
 						{
 							Log.d("Missing SKU in the Play Store list, id: " + sku);
+							showError("Failure to purchase (-2)");
 						}
 					}
 				}
 				else
 				{
 					Log.d("missing payment options");
+					showError("Failure to purchase (-3)");
 				}
 				break;
 		}
-		/* XXX: there should be requesters when there are purchase errors */
 	}
 
 	private SkuDetails getSkuDetails(String id)
@@ -292,7 +294,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 		else
 		{
 			Log.d("Failed to get billing sku list, code: " + billingResult.getResponseCode() + ", message: " + billingResult.getDebugMessage());
-
+			showError("Failed to get price list (-4)");
 		}
 	}
 
@@ -351,8 +353,8 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 		}
 		else
 		{
-			showError("Unknown error: " + billingResult.getResponseCode());
 			Log.d("Purchase failed, message: " + billingResult.getDebugMessage());
+			showError("Purchase failed (" + billingResult.getResponseCode() + ")");
 		}
 	}
 
