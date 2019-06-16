@@ -48,21 +48,26 @@ android {
 		targetSdkVersion 28
 		vectorDrawables.useSupportLibrary = "true"
 		buildConfigField "boolean", "logging", "true"
-		buildConfigField "String", "IAB_KEY", "\"\""
 		buildConfigField "String", "ACRAUri", "\"\""
 		resValue "string", "development_url", ""
 		resValue "string", "slogan", ""
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 	}
 	buildTypes {
-		release {
+		debug {
 			minifyEnabled false
+			shrinkResources false
+		}
+		release {
+			minifyEnabled true
+			shrinkResources true
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 			buildConfigField "boolean", "logging", "false"
 		}
 		/* 'beta' is not for the Play Store, only private betas */
 		beta {
 			minifyEnabled false
+			shrinkResources false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 			applicationIdSuffix ".beta"
 			versionNameSuffix "-beta"
@@ -75,8 +80,8 @@ android {
 			{
 				signingConfig signingConfigs.saker
 			}
-			versionCode 4
-			versionName "1.3"
+			versionCode 5
+			versionName "1.4"
 			buildConfigField "String", "serverUrl", "\"https://thesaker.is/wp-json/wp/v2/\""
 			buildConfigField "String", "ACRAUri", "\"https://zapek.com/report/saker/\""
 			buildConfigField "String", "IAB_KEY", "\"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArNnrAa1goufmIdR+/lmiCagRO5j75BDL0TXBVhTSGuBhNXJJKfx4Tq9OoJzVGDNWy/9UpGtD0gZiFA4n1eIbjNcKKhEabB6ab3E/BA/UnKQY97gwVt5GenT55YuFaxv8CUZqMyGRmjFmyP4H0lBBdAG2WZqwgW/59Kz/xRJV2ro/IyD70aZlqrHHYz8TSD2DZ8DHaNQUHdwIhTdBs3YwzQwPebOSFhH2mYGU9sP3c47GCf1jESx6wDZyyHBy3Ee3FOkOodmkLky8fDfh56Gr58/NyzoaIwUwVIfyaXOnjbS5031UFgJcpGnb05DTA77+L74qB0Yy4/awHjA+ZBVPNQIDAQAB\""
