@@ -26,13 +26,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-import androidx.core.view.MenuItemCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.widget.SearchView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -62,6 +55,14 @@ import com.zapek.android.submarinereader.util.SyncUtils;
 
 import java.io.File;
 import java.util.Arrays;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class ArticleListFragment extends AbsListFragment implements SearchView.OnQueryTextListener, SimpleCursorAdapter.ViewBinder, LoaderManager.LoaderCallbacks<Cursor>, AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener
 {
@@ -293,10 +294,13 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		/*
 		 * We need that when rotating.
 		 */
-		if (getAbsListView().canScrollVertically(-1))
+		getView().post(() ->
 		{
-			swipeRefreshLayout.setEnabled(false);
-		}
+			if (getAbsListView().canScrollVertically(-1))
+			{
+				swipeRefreshLayout.setEnabled(false);
+			}
+		});
 	}
 
 	@Override
