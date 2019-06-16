@@ -1,26 +1,25 @@
 /**
  * Copyright 2017 by David Gerber, Zapek Software Engineering
  * https://zapek.com
- *
+ * <p>
  * This file is part of Submarine Reader.
- *
+ * <p>
  * Submarine Reader is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * Submarine Reader is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Submarine Reader.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.zapek.android.submarinereader.activities;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,29 +31,37 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClient.BillingResponseCode;
+import com.android.billingclient.api.BillingClient.SkuType;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.zapek.android.submarinereader.BuildConfig;
 import com.zapek.android.submarinereader.Constants;
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.util.Log;
-import com.zapek.android.submarinereader.util.iab.IabHelper;
-import com.zapek.android.submarinereader.util.iab.IabResult;
-import com.zapek.android.submarinereader.util.iab.Inventory;
-import com.zapek.android.submarinereader.util.iab.Purchase;
-import com.zapek.android.submarinereader.util.iab.SkuDetails;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class DonationActivity extends AppCompatActivity implements View.OnClickListener, IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener, IabHelper.OnIabPurchaseFinishedListener, RadioGroup.OnCheckedChangeListener
+public class DonationActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, PurchasesUpdatedListener, BillingClientStateListener, SkuDetailsResponseListener, AcknowledgePurchaseResponseListener
 {
-	private final boolean simulate = !BuildConfig.BUILD_TYPE.equals("release");
+	private final boolean simulate = false;//!BuildConfig.BUILD_TYPE.equals("release");
 
-	private IabHelper iabHelper;
 	private RadioGroup paymentGroup;
 	private RadioButton coffeeRadio;
 	private RadioButton dinnerRadio;
@@ -64,6 +71,10 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	private ViewGroup thankYouGroup;
 	private Button payButton;
 	private SharedPreferences sharedPreferences;
+	private boolean hasError;
+
+	private BillingClient billingClient;
+	private List<SkuDetails> skuDetailsList;
 
 	private static final int RC_PURCHASE = 1;
 
@@ -95,9 +106,11 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 
 		if (!sharedPreferences.contains(Settings.DONATION_SKU) && !TextUtils.isEmpty(BuildConfig.IAB_KEY))
 		{
-			iabHelper = new IabHelper(this, BuildConfig.IAB_KEY);
-			iabHelper.enableDebugLogging(BuildConfig.logging);
-			iabHelper.startSetup(this);
+			billingClient = BillingClient.newBuilder(this)
+				.setListener(this)
+				.enablePendingPurchases()
+				.build();
+			billingClient.startConnection(this);
 		}
 		else
 		{
@@ -111,10 +124,10 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	{
 		super.onDestroy();
 
-		if (iabHelper != null)
+		if (billingClient != null && billingClient.isReady())
 		{
-			iabHelper.disposeWhenFinished();
-			iabHelper = null;
+			billingClient.endConnection();
+			billingClient = null;
 		}
 	}
 
@@ -147,24 +160,33 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 
 				if (sku != null)
 				{
-					try
+					if (simulate)
 					{
-						if (simulate)
-						{
-							showError("");
+						showError("");
 
-							sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
-							donationGroup.setVisibility(View.GONE);
-							thankYouGroup.setVisibility(View.VISIBLE);
+						sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
+						donationGroup.setVisibility(View.GONE);
+						thankYouGroup.setVisibility(View.VISIBLE);
+					}
+					else
+					{
+						SkuDetails skuDetails = getSkuDetails(sku);
+						if (skuDetails != null)
+						{
+							BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+								.setSkuDetails(skuDetails)
+								.build();
+
+							BillingResult result = billingClient.launchBillingFlow(this, billingFlowParams);
+							if (result.getResponseCode() != BillingResponseCode.OK)
+							{
+								Log.d("Failure to launch the billing flow, code: " + result.getResponseCode() + ", message: " + result.getDebugMessage());
+							}
 						}
 						else
 						{
-							iabHelper.launchPurchaseFlow(this, sku, RC_PURCHASE, this, "");
+							Log.d("Missing SKU in the Play Store list, id: " + sku);
 						}
-					}
-					catch (IabHelper.IabAsyncInProgressException e)
-					{
-						Log.d("Async operation already in progress: " + e.getMessage()); /* shouldn't happen (tm) */
 					}
 				}
 				else
@@ -173,19 +195,22 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 				}
 				break;
 		}
+		/* XXX: there should be requesters when there are purchase errors */
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	private SkuDetails getSkuDetails(String id)
 	{
-		if (iabHelper != null)
+		if (skuDetailsList != null)
 		{
-			if (iabHelper.handleActivityResult(requestCode, resultCode, data))
+			for (SkuDetails skuDetails : skuDetailsList)
 			{
-				return;
+				if (id.equals(skuDetails.getSku()))
+				{
+					return skuDetails;
+				}
 			}
 		}
-		super.onActivityResult(requestCode, resultCode, data);
+		return null;
 	}
 
 	@Override
@@ -194,7 +219,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 		switch (group.getId())
 		{
 			case R.id.paymentGroup:
-				if (iabHelper != null || simulate)
+				if ((billingClient != null && billingClient.isReady() && !hasError) || simulate)
 				{
 					payButton.setEnabled(true);
 				}
@@ -203,55 +228,71 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	}
 
 	@Override
-	public void onIabSetupFinished(IabResult result)
+	public void onBillingSetupFinished(BillingResult billingResult)
 	{
-		if (result.isSuccess())
+		if (billingResult.getResponseCode() == BillingResponseCode.OK)
 		{
-			if (iabHelper != null)
-			{
-				Log.d("IAB successfully setup");
-				try
-				{
-					ArrayList<String> skus = new ArrayList<>();
-					skus.add(Constants.SKU_COFFEE);
-					skus.add(Constants.SKU_DINNER);
-					skus.add(Constants.SKU_RENT);
+			Log.d("Billing client successfully setup, querying list");
 
-					iabHelper.queryInventoryAsync(true, skus, null, this);
-				}
-				catch (IabHelper.IabAsyncInProgressException e)
-				{
-					Log.d("Error querying inventory details. Operation already in progress.");
-				}
-			}
+			ArrayList<String> skus = new ArrayList<>();
+			skus.add(Constants.SKU_COFFEE);
+			skus.add(Constants.SKU_DINNER);
+			skus.add(Constants.SKU_RENT);
+
+			SkuDetailsParams.Builder skuParams = SkuDetailsParams.newBuilder();
+			skuParams.setSkusList(skus).setType(SkuType.INAPP);
+			billingClient.querySkuDetailsAsync(skuParams.build(), this);
 		}
 		else
 		{
-			Log.d("Failed to setup IAB: " + result);
-			iabHelper.disposeWhenFinished();
-			iabHelper = null;
+			Log.d("Failed to setup Billing Client, code: " + billingResult.getResponseCode() + ", message: " + billingResult.getDebugMessage());
+
 			if (!simulate)
 			{
-				showError("Couldn't setup Google Play's In-App billing system");
+				showError("Couldn't setup Google Play's In-App billing system (" + billingResult.getResponseCode() + ")");
 			}
 		}
 	}
 
 	@Override
-	public void onQueryInventoryFinished(IabResult result, Inventory inventory)
+	public void onBillingServiceDisconnected()
 	{
-		if (iabHelper != null)
+		/* XXX: we should retry the connection */
+	}
+
+	@Override
+	public void onSkuDetailsResponse(BillingResult billingResult, List<SkuDetails> skuDetailsList)
+	{
+		if (billingResult.getResponseCode() == BillingResponseCode.OK)
 		{
-			if (result.isSuccess())
+			this.skuDetailsList = skuDetailsList;
+
+			for (SkuDetails skuDetails : skuDetailsList)
 			{
-				setPrice(coffeeRadio, R.string.sku_coffee_ask, inventory.getSkuDetails(Constants.SKU_COFFEE));
-				setPrice(dinnerRadio, R.string.sku_dinner_ask, inventory.getSkuDetails(Constants.SKU_DINNER));
-				setPrice(rentRadio, R.string.sku_rent_ask, inventory.getSkuDetails(Constants.SKU_RENT));
+				switch (skuDetails.getSku())
+				{
+					case Constants.SKU_COFFEE:
+						setPrice(coffeeRadio, R.string.sku_coffee_ask, skuDetails);
+						break;
+
+					case Constants.SKU_DINNER:
+						setPrice(dinnerRadio, R.string.sku_dinner_ask, skuDetails);
+						break;
+
+					case Constants.SKU_RENT:
+						setPrice(rentRadio, R.string.sku_rent_ask, skuDetails);
+						break;
+
+					default:
+						Log.d("Unhandled SKU: " + skuDetails.getSku());
+						break;
+				}
 			}
-			else
-			{
-				Log.d("Failed to query inventory for details: " + result);
-			}
+		}
+		else
+		{
+			Log.d("Failed to get billing sku list, code: " + billingResult.getResponseCode() + ", message: " + billingResult.getDebugMessage());
+
 		}
 	}
 
@@ -269,22 +310,58 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	}
 
 	@Override
-	public void onIabPurchaseFinished(IabResult result, Purchase purchase)
+	public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases)
 	{
-		if (iabHelper != null || simulate)
+		if (billingResult.getResponseCode() == BillingResponseCode.OK && purchases != null)
 		{
-			if (result.isSuccess() || simulate)
+			String sku = null;
+
+			for (Purchase purchase : purchases)
+			{
+				if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED)
+				{
+					sku = purchase.getSku(); /* normally he can only purchase one thing at once */
+
+					if (!purchase.isAcknowledged())
+					{
+						AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+							.setPurchaseToken(purchase.getPurchaseToken())
+							.build();
+						billingClient.acknowledgePurchase(acknowledgePurchaseParams, this);
+					}
+				}
+			}
+
+			if (sku != null)
 			{
 				showError("");
 
-				sharedPreferences.edit().putString(Settings.DONATION_SKU, purchase.getSku()).apply();
+				sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
 				donationGroup.setVisibility(View.GONE);
 				thankYouGroup.setVisibility(View.VISIBLE);
 			}
 			else
 			{
-				showError(result.getMessage());
+				showError("Purchase failed");
 			}
+		}
+		else if (billingResult.getResponseCode() == BillingResponseCode.USER_CANCELED)
+		{
+			showError("Purchase canceled");
+		}
+		else
+		{
+			showError("Unknown error: " + billingResult.getResponseCode());
+			Log.d("Purchase failed, message: " + billingResult.getDebugMessage());
+		}
+	}
+
+	@Override
+	public void onAcknowledgePurchaseResponse(BillingResult billingResult)
+	{
+		if (billingResult.getResponseCode() != BillingResponseCode.OK)
+		{
+			Log.d("Purchase acknowledgment failed, code: " + billingResult.getResponseCode() + ", message: " + billingResult.getDebugMessage());
 		}
 	}
 
@@ -294,10 +371,12 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 		{
 			errorText.setText(errorMessage);
 			errorText.setVisibility(View.VISIBLE);
+			hasError = true;
 		}
 		else
 		{
 			errorText.setVisibility(View.GONE);
+			hasError = false;
 		}
 	}
 }

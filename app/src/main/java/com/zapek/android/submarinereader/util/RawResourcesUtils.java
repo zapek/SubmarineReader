@@ -33,7 +33,7 @@ public class RawResourcesUtils
 		InputStream in = context.getResources().openRawResource(resId);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-		byte buf[] = new byte[1024];
+		byte[] buf = new byte[1024];
 		int len;
 		try
 		{

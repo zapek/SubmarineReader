@@ -31,15 +31,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.navigation.NavigationView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.Gravity;
@@ -50,8 +41,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClient.BillingResponseCode;
+import com.android.billingclient.api.BillingClient.SkuType;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.Purchase.PurchaseState;
+import com.android.billingclient.api.Purchase.PurchasesResult;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.google.android.material.navigation.NavigationView;
 import com.zapek.android.submarinereader.BuildConfig;
-import com.zapek.android.submarinereader.Constants;
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.fragments.ArticleListFragment;
 import com.zapek.android.submarinereader.settings.Settings;
@@ -60,12 +60,19 @@ import com.zapek.android.submarinereader.util.AlertRequester;
 import com.zapek.android.submarinereader.util.Log;
 import com.zapek.android.submarinereader.util.NightModeUtils;
 import com.zapek.android.submarinereader.util.SyncUtils;
-import com.zapek.android.submarinereader.util.iab.IabHelper;
-import com.zapek.android.submarinereader.util.iab.IabResult;
-import com.zapek.android.submarinereader.util.iab.Inventory;
-import com.zapek.android.submarinereader.util.iab.Purchase;
 
-public class ArticleListActivity extends AppCompatActivity implements ArticleListFragment.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, AlertRequester.AlertDialogListener, IabHelper.OnIabSetupFinishedListener, IabHelper.QueryInventoryFinishedListener, View.OnClickListener
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+public class ArticleListActivity extends AppCompatActivity implements ArticleListFragment.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, AlertRequester.AlertDialogListener, View.OnClickListener, BillingClientStateListener, PurchasesUpdatedListener
 {
 	private static final int REQUEST_REVIEW_SETTINGS = 1;
 	private static final int REQUEST_DONATE = 2;
@@ -82,7 +89,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	private DrawerLayout drawerLayout;
 	private boolean nightMode;
 
-	private IabHelper iabHelper;
+	private BillingClient billingClient;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -157,9 +164,11 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 		if (!sharedPreferences.contains(Settings.DONATION_SKU) && !TextUtils.isEmpty(BuildConfig.IAB_KEY))
 		{
-			iabHelper = new IabHelper(this, BuildConfig.IAB_KEY);
-			iabHelper.enableDebugLogging(BuildConfig.logging);
-			iabHelper.startSetup(this);
+			billingClient = BillingClient.newBuilder(this)
+				.setListener(this)
+				.enablePendingPurchases()
+				.build();
+			billingClient.startConnection(this);
 		}
 	}
 
@@ -168,10 +177,10 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	{
 		super.onDestroy();
 
-		if (iabHelper != null)
+		if (billingClient != null && billingClient.isReady())
 		{
-			iabHelper.disposeWhenFinished();
-			iabHelper = null;
+			billingClient.endConnection();
+			billingClient = null;
 		}
 	}
 
@@ -385,58 +394,24 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	}
 
 	@Override
-	public void onIabSetupFinished(IabResult result)
+	public void onBillingSetupFinished(BillingResult billingResult)
 	{
-		if (result.isSuccess())
+		if (billingResult.getResponseCode() == BillingResponseCode.OK)
 		{
-			if (iabHelper != null)
+			PurchasesResult purchaseResult = billingClient.queryPurchases(SkuType.INAPP);
+
+			if (purchaseResult.getBillingResult().getResponseCode() == BillingResponseCode.OK)
 			{
-				try
-				{
-					iabHelper.queryInventoryAsync(this);
-				}
-				catch (IabHelper.IabAsyncInProgressException e)
-				{
-					Log.d("Error querying inventory. Operation already in progress.");
-				}
-			}
-		}
-		else
-		{
-			Log.d("Failed to setup IAB: " + result);
-		}
-	}
+				String sku = null;
 
-	@Override
-	public void onQueryInventoryFinished(IabResult result, Inventory inventory)
-	{
-		if (iabHelper != null)
-		{
-			if (result.isSuccess())
-			{
-				Log.d("Inventory query successful.");
+				Log.d("Billing purchase query successful");
 
-				Purchase coffePurchase = inventory.getPurchase(Constants.SKU_COFFEE);
-				Purchase dinnerPurchase = inventory.getPurchase(Constants.SKU_DINNER);
-				Purchase rentPurchase = inventory.getPurchase(Constants.SKU_RENT);
-
-				String sku;
-
-				if (rentPurchase != null)
+				for (Purchase purchase : purchaseResult.getPurchasesList())
 				{
-					sku = Constants.SKU_RENT;
-				}
-				else if (dinnerPurchase != null)
-				{
-					sku = Constants.SKU_DINNER;
-				}
-				else if (coffePurchase != null)
-				{
-					sku = Constants.SKU_COFFEE;
-				}
-				else
-				{
-					sku = null;
+					if (purchase.getPurchaseState() == PurchaseState.PURCHASED)
+					{
+						sku = purchase.getSku();
+					}
 				}
 
 				if (sku != null)
@@ -464,8 +439,24 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 			}
 			else
 			{
-				Log.d("Failed to query inventory: " + result);
+				Log.d("Failed to get billing purchases, code: " + purchaseResult.getBillingResult().getResponseCode() + ", message: " + purchaseResult.getBillingResult().getDebugMessage());
 			}
 		}
+		else
+		{
+			Log.d("Failed to setup Billing Client, code: " + billingResult.getResponseCode() + ", message: " + billingResult.getDebugMessage());
+		}
+	}
+
+	@Override
+	public void onBillingServiceDisconnected()
+	{
+		/* we don't retry the connection because it's not a critical feature */
+	}
+
+	@Override
+	public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases)
+	{
+		Log.d("Unhandled purchase updates");
 	}
 }

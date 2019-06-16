@@ -116,6 +116,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.8.5'
 	implementation 'org.jsoup:jsoup:1.11.3'
 	implementation 'com.squareup.picasso:picasso:2.71828'
+	implementation 'com.android.billingclient:billing:2.0.1'
 	betaImplementation 'ch.acra:acra:4.9.2'
 	testImplementation 'junit:junit:4.13-beta-2'
 }
