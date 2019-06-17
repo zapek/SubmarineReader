@@ -32,6 +32,7 @@ import java.util.List;
 
 public class Post
 {
+	@SerializedName("id")
 	private long id;
 
 	@SerializedName("date_gmt")
@@ -40,14 +41,19 @@ public class Post
 	@SerializedName("modified_gmt")
 	private Date modified;
 
+	@SerializedName("title")
 	private RenderedString title;
 
+	@SerializedName("content")
 	private RenderedString content;
 
+	@SerializedName("author")
 	private int author;
 
+	@SerializedName("excerpt")
 	private RenderedString excerpt;
 
+	@SerializedName("link")
 	private String link;
 
 	@SerializedName("featured_media")

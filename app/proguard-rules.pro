@@ -15,3 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# See https://r8.googlesource.com/r8/+/refs/heads/master/compatibility-faq.md
+# We also need to use @SerializedName everywhere
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}

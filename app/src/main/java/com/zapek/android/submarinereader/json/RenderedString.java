@@ -20,7 +20,10 @@
 
 package com.zapek.android.submarinereader.json;
 
+import com.google.gson.annotations.SerializedName;
+
 public class RenderedString
 {
+	@SerializedName("rendered")
 	public String rendered;
 }

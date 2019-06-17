@@ -104,7 +104,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if (!sharedPreferences.contains(Settings.DONATION_SKU) && !TextUtils.isEmpty(BuildConfig.IAB_KEY))
+		if (BuildConfig.enableDonations && !sharedPreferences.contains(Settings.DONATION_SKU))
 		{
 			billingClient = BillingClient.newBuilder(this)
 				.setListener(this)

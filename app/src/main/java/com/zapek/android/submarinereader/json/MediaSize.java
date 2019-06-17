@@ -24,8 +24,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class MediaSize
 {
+	@SerializedName("width")
 	private int width;
 
+	@SerializedName("height")
 	private int height;
 
 	@SerializedName("mime_type")

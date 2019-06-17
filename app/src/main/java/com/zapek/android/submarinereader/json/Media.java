@@ -24,6 +24,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Media
 {
+	@SerializedName("id")
 	private long id;
 
 	@SerializedName("mime_type")

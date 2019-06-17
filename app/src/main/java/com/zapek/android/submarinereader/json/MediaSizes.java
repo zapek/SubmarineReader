@@ -20,11 +20,20 @@
 
 package com.zapek.android.submarinereader.json;
 
+import com.google.gson.annotations.SerializedName;
+
 public class MediaSizes
 {
+	@SerializedName("thumbnail")
 	private MediaSize thumbnail;
+
+	@SerializedName("medium")
 	private MediaSize medium;
+
+	@SerializedName("large")
 	private MediaSize large;
+
+	@SerializedName("full")
 	private MediaSize full;
 
 	public MediaSize getThumbnail()

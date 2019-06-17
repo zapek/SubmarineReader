@@ -31,7 +31,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -162,7 +161,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 			navigationPosition = savedInstanceState.getInt(STATE_NAVIGATION_POSITION);
 		}
 
-		if (!sharedPreferences.contains(Settings.DONATION_SKU) && !TextUtils.isEmpty(BuildConfig.IAB_KEY))
+		if (BuildConfig.enableDonations && !sharedPreferences.contains(Settings.DONATION_SKU) )
 		{
 			billingClient = BillingClient.newBuilder(this)
 				.setListener(this)
