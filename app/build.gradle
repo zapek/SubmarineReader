@@ -83,7 +83,7 @@ android {
 			{
 				signingConfig signingConfigs.saker
 			}
-			versionCode 6
+			versionCode 7
 			versionName "1.4"
 			buildConfigField "String", "serverUrl", "\"https://thesaker.is/wp-json/wp/v2/\""
 			buildConfigField "String", "ACRAUri", "\"https://zapek.com/report/saker/\""

@@ -132,7 +132,6 @@ public class WordpressClient
 					/*
 					 * Load the local data.
 					 */
-
 					HashMap<Long, ContentValues> localValues = null;
 					String[] PROJECTION = {
 						PostColumns._ID,
@@ -210,7 +209,8 @@ public class WordpressClient
 						for (HashMap.Entry<Long, ContentValues> entry : localValues.entrySet())
 						{
 							ContentValues localValue = entry.getValue();
-							if (!localValue.getAsBoolean(PostColumns.STARRED))
+							Integer starred = localValue.getAsInteger(PostColumns.STARRED);
+							if (starred == null || starred != 1)
 							{
 								deletePost(localValue.getAsLong(PostColumns._ID));
 							}
