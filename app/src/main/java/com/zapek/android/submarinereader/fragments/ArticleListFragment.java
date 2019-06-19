@@ -58,7 +58,6 @@ import java.util.Arrays;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -177,7 +176,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		{
 			filter = new Filter();
 		}
-		getLoaderManager().initLoader(LIST_LOADER, null, this);
+		LoaderManager.getInstance(this).initLoader(LIST_LOADER, null, this);
 	}
 
 	@Override
@@ -254,7 +253,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		if (searchItem != null)
 		{
 			/* XXX: the searchview's content is not restored upon rotations.. */
-			SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+			SearchView searchView = (SearchView) searchItem.getActionView();
 			if (searchView != null) /* XXX: why is it null? */
 			{
 				searchView.setOnQueryTextListener(this);
@@ -346,7 +345,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		if (filter.hasChanged())
 		{
 			Log.d("filter selection: " + filter.getSelection() + ", arguments: " + Arrays.toString(filter.getSelectionArguments()));
-			getLoaderManager().restartLoader(LIST_LOADER, null, this);
+			LoaderManager.getInstance(this).restartLoader(LIST_LOADER, null, this);
 		}
 	}
 

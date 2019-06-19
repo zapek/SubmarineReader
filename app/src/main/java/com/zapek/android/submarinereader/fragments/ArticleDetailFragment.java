@@ -31,13 +31,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.core.app.ShareCompat;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,6 +48,14 @@ import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.util.JavaScriptInterface;
 import com.zapek.android.submarinereader.widgets.CustomWebChromeClient;
 import com.zapek.android.submarinereader.widgets.CustomWebViewClient;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 public class ArticleDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CustomWebChromeClient.Listener
 {
@@ -118,7 +119,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	public void onActivityCreated(@Nullable Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		getLoaderManager().initLoader(LOCAL_LOADER, null, this);
+		LoaderManager.getInstance(this).initLoader(LOCAL_LOADER, null, this);
 	}
 
 	public void setArticleUri(Uri articleUri)
