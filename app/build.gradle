@@ -104,8 +104,6 @@ android {
 	// applicationId. This final loop fixes it
 	applicationVariants.all { variant ->
 		variant.buildConfigField "String", "providerAuthority", "\"${applicationId}\""
-		variant.buildConfigField "String", "accountType", "\"${applicationId}\""
-		variant.buildConfigField "String", "accountName", "\"Public\""
 		variant.resValue "string", "application_id", applicationId
 	}
 }
@@ -118,6 +116,7 @@ dependencies {
 	implementation 'androidx.appcompat:appcompat:1.0.2'
 	implementation 'com.google.android.material:material:1.0.0'
 	implementation 'androidx.cardview:cardview:1.0.0'
+	implementation 'androidx.work:work-runtime:2.0.1'
 	implementation 'com.squareup.okhttp3:okhttp:3.14.1'
 	implementation 'com.squareup.retrofit2:retrofit:2.5.0'
 	implementation 'com.squareup.retrofit2:converter-gson:2.5.0'

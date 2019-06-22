@@ -62,7 +62,6 @@
 					android:layout_height="wrap_content"
 					android:layout_below="@id/emptyText"
 					android:layout_centerHorizontal="true"
-					android:visibility="gone"
 					android:text="@string/sync"/>
 			</RelativeLayout>
 			<LinearLayout

@@ -40,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -47,11 +48,10 @@ import com.zapek.android.submarinereader.Constants;
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.db.DataProvider;
 import com.zapek.android.submarinereader.db.tables.PostColumns;
-import com.zapek.android.submarinereader.sync.SyncProgress;
+import com.zapek.android.submarinereader.sync.SyncWorker;
 import com.zapek.android.submarinereader.util.ConnectivityUtils;
 import com.zapek.android.submarinereader.util.Filter;
 import com.zapek.android.submarinereader.util.Log;
-import com.zapek.android.submarinereader.util.SyncUtils;
 
 import java.io.File;
 import java.util.Arrays;
@@ -62,6 +62,9 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 public class ArticleListFragment extends AbsListFragment implements SearchView.OnQueryTextListener, SimpleCursorAdapter.ViewBinder, LoaderManager.LoaderCallbacks<Cursor>, AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener
 {
@@ -80,6 +83,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	private View progressContainer;
 	private View listContainer;
 	private SwipeRefreshLayout swipeRefreshLayout;
+	private boolean syncStatus;
 
 	private static final String STATE_MODE = "mode";
 	private int mode;
@@ -189,7 +193,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 
 	private void updateListEmptyText()
 	{
-		if (SyncUtils.isSyncedAutomatically() && SyncProgress.isSyncing(getContext()))
+		if (isSyncing())
 		{
 			if (ConnectivityUtils.hasConnectivity(getContext()))
 			{
@@ -205,7 +209,14 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 			switch (mode)
 			{
 				case 0:
-					setEmptyText(getString(R.string.no_articles));
+					if (ConnectivityUtils.hasConnectivity(getContext()))
+					{
+						setEmptyText(getString(R.string.no_articles));
+					}
+					else
+					{
+						setEmptyText(getString(R.string.no_connection));
+					}
 					break;
 
 				case 1:
@@ -444,7 +455,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	@Override
 	public void onRefresh()
 	{
-		SyncUtils.manualSync();
+		syncArticles();
 	}
 
 	@Override
@@ -453,13 +464,16 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		switch (v.getId())
 		{
 			case R.id.sync:
-				SyncUtils.manualSync(); /* XXX: there's no feedback in there, which sucks */
+				syncArticles();
 				break;
 		}
 	}
 
 	public void setSyncStatus(boolean isSyncing)
 	{
+		Log.d("syncing status: " + isSyncing);
+		syncStatus = isSyncing;
+
 		updateListEmptyText();
 
 		if (isSyncing)
@@ -472,14 +486,35 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 			progressBar.setVisibility(View.INVISIBLE);
 			swipeRefreshLayout.setRefreshing(false);
 		}
+	}
 
-		if (SyncUtils.isSyncedAutomatically())
+	private boolean isSyncing()
+	{
+		return syncStatus;
+	}
+
+	public void syncArticles()
+	{
+		if (!isSyncing())
 		{
-			syncButton.setVisibility(View.GONE);
+			if (ConnectivityUtils.hasConnectivity(getActivity()))
+			{
+
+				OneTimeWorkRequest immediateSyncRequest = new OneTimeWorkRequest.Builder(SyncWorker.class)
+					.addTag(SyncWorker.SYNC_TAG)
+					.build();
+
+				WorkManager.getInstance().enqueueUniqueWork("ImmediateSync", ExistingWorkPolicy.KEEP, immediateSyncRequest);
+			}
+			else
+			{
+				Log.d("no network connectivity");
+				Toast.makeText(getActivity(), "No network connectivity", Toast.LENGTH_SHORT).show();
+			}
 		}
 		else
 		{
-			syncButton.setVisibility(View.VISIBLE);
+			Log.d("already syncing, dropping request");
 		}
 	}
 

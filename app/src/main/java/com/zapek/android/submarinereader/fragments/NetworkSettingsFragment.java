@@ -24,11 +24,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
 
 import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.settings.Settings;
-import com.zapek.android.submarinereader.util.SyncUtils;
+import com.zapek.android.submarinereader.sync.SyncWorker;
+
+import androidx.annotation.Nullable;
 
 public class NetworkSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener
 {
@@ -61,7 +62,7 @@ public class NetworkSettingsFragment extends PreferenceFragment implements Share
 		switch (key)
 		{
 			case "autoSync":
-				SyncUtils.setSyncedAutomatically(sharedPreferences.getBoolean("autoSync", true)); /* not in Settings as a constant because it must not be used directly */
+				SyncWorker.setSyncArticlesAutomatically(sharedPreferences.getBoolean("autoSync", true)); /* not in Settings as a constant because it must not be used directly */
 				break;
 
 			case Settings.SYNC_IMAGES:
@@ -73,7 +74,7 @@ public class NetworkSettingsFragment extends PreferenceFragment implements Share
 	@Override
 	public void onDestroy()
 	{
-		SyncUtils.setSyncedAutomatically(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("autoSync", true));
+		SyncWorker.setSyncArticlesAutomatically(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("autoSync", true));
 		super.onDestroy();
 	}
 }

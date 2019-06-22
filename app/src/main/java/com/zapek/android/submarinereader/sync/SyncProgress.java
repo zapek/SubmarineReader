@@ -22,39 +22,16 @@ package com.zapek.android.submarinereader.sync;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.zapek.android.submarinereader.BuildConfig;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 public class SyncProgress
 {
-	public static final String ACTION_SYNC_START = BuildConfig.APPLICATION_ID + ".SYNC_START";
-
 	public static final String ACTION_SYNC_PROGRESS = BuildConfig.APPLICATION_ID + ".SYNC_PROGRESS";
 	public static final String SYNC_CURRENT = "sync_current";
 	public static final String SYNC_TOTAL = "sync_total";
-
-	public static final String ACTION_SYNC_STOP = BuildConfig.APPLICATION_ID + ".SYNC_STOP";
-
-	private static final String PREFERENCE_NAME = "SyncProgress";
-	private static final String KEY_SYNCING = "syncing";
-
-	public static void syncStart(Context context)
-	{
-		SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-		sharedPreferences.edit().putBoolean(KEY_SYNCING, true).apply();
-		Intent intent = new Intent(ACTION_SYNC_START);
-		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-	}
-
-	public static void syncStop(Context context)
-	{
-		SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-		sharedPreferences.edit().putBoolean(KEY_SYNCING, false).apply();
-		Intent intent = new Intent(ACTION_SYNC_STOP);
-		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-	}
 
 	public static void syncProgress(Context context, int current, int total)
 	{
@@ -62,11 +39,5 @@ public class SyncProgress
 		intent.putExtra(SYNC_CURRENT, current);
 		intent.putExtra(SYNC_TOTAL, total);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-	}
-
-	public static boolean isSyncing(Context context)
-	{
-		SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-		return sharedPreferences.getBoolean(KEY_SYNCING, false);
 	}
 }

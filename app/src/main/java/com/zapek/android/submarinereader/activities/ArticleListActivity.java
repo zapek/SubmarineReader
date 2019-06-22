@@ -1,19 +1,19 @@
 /**
  * Copyright 2017 by David Gerber, Zapek Software Engineering
  * https://zapek.com
- *
+ * <p>
  * This file is part of Submarine Reader.
- *
+ * <p>
  * Submarine Reader is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * Submarine Reader is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with Submarine Reader.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,10 +55,11 @@ import com.zapek.android.submarinereader.R;
 import com.zapek.android.submarinereader.fragments.ArticleListFragment;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.sync.SyncProgress;
+import com.zapek.android.submarinereader.sync.SyncWorker;
 import com.zapek.android.submarinereader.util.AlertRequester;
+import com.zapek.android.submarinereader.util.ConnectivityUtils;
 import com.zapek.android.submarinereader.util.Log;
 import com.zapek.android.submarinereader.util.NightModeUtils;
-import com.zapek.android.submarinereader.util.SyncUtils;
 
 import java.util.List;
 
@@ -69,9 +70,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
-public class ArticleListActivity extends AppCompatActivity implements ArticleListFragment.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, AlertRequester.AlertDialogListener, View.OnClickListener, BillingClientStateListener, PurchasesUpdatedListener
+public class ArticleListActivity extends AppCompatActivity implements ArticleListFragment.OnItemSelectedListener, NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, AlertRequester.AlertDialogListener, View.OnClickListener, BillingClientStateListener, PurchasesUpdatedListener, Observer<List<WorkInfo>>
 {
 	private static final int REQUEST_REVIEW_SETTINGS = 1;
 	private static final int REQUEST_DONATE = 2;
@@ -150,10 +155,26 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 			nightButton.setVisibility(View.GONE);
 		}
 
+		LiveData<List<WorkInfo>> savedWorkInfo = WorkManager.getInstance().getWorkInfosByTagLiveData(SyncWorker.SYNC_TAG);
+		savedWorkInfo.observe(this, this);
+
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		if (sharedPreferences.getBoolean(Settings.SHOW_NETWORK_SETTINGS, false))
+		if (sharedPreferences.getBoolean(Settings.NETWORK_SETTINGS_REVIEWED, Settings.NETWORK_SETTINGS_REVIEWED_DEFAULT))
 		{
-			AlertRequester.confirm(this, getString(R.string.alert_slow_network), getString(R.string.alert_slow_network_review), getString(R.string.alert_slow_network_not_now), REQUEST_REVIEW_SETTINGS, 0);
+			setAutoSync(); /* to stay on the safe side */
+		}
+		else
+		{
+			if (ConnectivityUtils.hasGoodConnection(this))
+			{
+				sharedPreferences.edit().putBoolean(Settings.NETWORK_SETTINGS_REVIEWED, true).apply();
+				setAutoSync();
+				articleListFragment.syncArticles();
+			}
+			else
+			{
+				AlertRequester.confirm(this, getString(R.string.alert_slow_network), getString(R.string.alert_slow_network_review), getString(R.string.alert_slow_network_not_now), REQUEST_REVIEW_SETTINGS, 0);
+			}
 		}
 
 		if (savedInstanceState != null)
@@ -161,7 +182,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 			navigationPosition = savedInstanceState.getInt(STATE_NAVIGATION_POSITION);
 		}
 
-		if (BuildConfig.enableDonations && !sharedPreferences.contains(Settings.DONATION_SKU) )
+		if (BuildConfig.enableDonations && !sharedPreferences.contains(Settings.DONATION_SKU))
 		{
 			billingClient = BillingClient.newBuilder(this)
 				.setListener(this)
@@ -190,7 +211,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		{
 			case REQUEST_REVIEW_SETTINGS:
 			{
-				sharedPreferences.edit().putBoolean(Settings.SHOW_NETWORK_SETTINGS, false).apply();
+				sharedPreferences.edit().putBoolean(Settings.NETWORK_SETTINGS_REVIEWED, true).apply();
 
 				Intent intent = new Intent(this, NetworkSettingsActivity.class);
 				startActivityForResult(intent, ACTIVITY_RESULT_SYNC);
@@ -215,9 +236,8 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		{
 			case REQUEST_REVIEW_SETTINGS:
 			{
-				sharedPreferences.edit().putBoolean(Settings.SHOW_NETWORK_SETTINGS, false).apply();
-				SyncUtils.setSyncedAutomatically(true);
-				SyncUtils.manualSync();
+				setAutoSync();
+				articleListFragment.syncArticles();
 			}
 			break;
 
@@ -234,15 +254,22 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	{
 		if (requestCode == ACTIVITY_RESULT_SYNC)
 		{
-			if (SyncUtils.isSyncedAutomatically())
+			setAutoSync();
+			if (sharedPreferences.getBoolean("autoSync", true))
 			{
-				SyncUtils.manualSync();
+				articleListFragment.syncArticles();
 			}
 		}
 		else
 		{
 			super.onActivityResult(requestCode, resultCode, data);
 		}
+	}
+
+	private void setAutoSync()
+	{
+		SyncWorker.setSyncArticlesAutomatically(sharedPreferences.getBoolean("autoSync", true));
+
 	}
 
 	@Override
@@ -304,12 +331,50 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		syncStatusReceiver = new SyncStatusReceiver();
 
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(SyncProgress.ACTION_SYNC_START);
 		filter.addAction(SyncProgress.ACTION_SYNC_PROGRESS);
-		filter.addAction(SyncProgress.ACTION_SYNC_STOP);
 		LocalBroadcastManager.getInstance(this).registerReceiver(syncStatusReceiver, filter);
+	}
 
-		articleListFragment.setSyncStatus(SyncProgress.isSyncing(this));
+	@Override
+	public void onChanged(List<WorkInfo> workInfos)
+	{
+		boolean running = false;
+
+		/*
+		 * We iterate all WorkInfos here because there might
+		 * be 2 (autosync and immediate sync). As soon as we
+		 * detect that one of them is in the RUNNING state, it
+		 * means a sync is happening.
+		 */
+		for (WorkInfo workInfo : workInfos)
+		{
+			switch (workInfo.getState())
+			{
+				case RUNNING:
+					running = true;
+					break;
+			}
+		}
+		articleListFragment.setSyncStatus(running);
+	}
+
+	private class SyncStatusReceiver extends BroadcastReceiver
+	{
+
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			switch (intent.getAction())
+			{
+				case SyncProgress.ACTION_SYNC_PROGRESS:
+					articleListFragment.setSyncProgress(intent.getIntExtra(SyncProgress.SYNC_CURRENT, 0), intent.getIntExtra(SyncProgress.SYNC_TOTAL, 0));
+					break;
+
+				default:
+					Log.d("missing action for " + intent.getAction());
+					break;
+			}
+		}
 	}
 
 	@Override
@@ -363,32 +428,6 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 				AppCompatDelegate.setDefaultNightMode(NightModeUtils.isInNightMode(this) ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
 				recreate();
 				break;
-		}
-	}
-
-	private class SyncStatusReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			switch (intent.getAction())
-			{
-				case SyncProgress.ACTION_SYNC_START:
-					articleListFragment.setSyncStatus(true);
-					break;
-
-				case SyncProgress.ACTION_SYNC_STOP:
-					articleListFragment.setSyncStatus(false);
-					break;
-
-				case SyncProgress.ACTION_SYNC_PROGRESS:
-					articleListFragment.setSyncProgress(intent.getIntExtra(SyncProgress.SYNC_CURRENT, 0), intent.getIntExtra(SyncProgress.SYNC_TOTAL, 0));
-					break;
-
-				default:
-					Log.d("missing action for " + intent.getAction());
-					break;
-			}
 		}
 	}
 

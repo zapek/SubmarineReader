@@ -26,7 +26,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SyncResult;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -75,17 +74,17 @@ public class WordpressClient
 	private final Context context;
 	private final OkHttpClient okHttpClient;
 	private final ContentProviderClient contentProviderClient;
-	private final SyncResult syncResult;
+	private final SyncStats syncStats;
 	private final SharedPreferences sharedPreferences;
 	private final WordpressApi wordpressApi;
 	private final boolean forceRefresh;
 	private final boolean syncImages;
 
-	public WordpressClient(Context context, ContentProviderClient contentProviderClient, SyncResult syncResult, SharedPreferences sharedPreferences)
+	public WordpressClient(Context context, ContentProviderClient contentProviderClient, SyncStats syncStats, SharedPreferences sharedPreferences)
 	{
 		this.context = context;
 		this.contentProviderClient = contentProviderClient;
-		this.syncResult = syncResult;
+		this.syncStats = syncStats;
 		this.sharedPreferences = sharedPreferences;
 		forceRefresh = sharedPreferences.getBoolean(Settings.SYNC_FORCE_UPDATE, Settings.SYNC_FORCE_UPDATE_DEFAULT);
 		syncImages = sharedPreferences.getBoolean(Settings.SYNC_IMAGES, Settings.SYNC_IMAGES_DEFAULT);
@@ -221,21 +220,27 @@ public class WordpressClient
 			else
 			{
 				Log.d("HTTP error: " + response.code() + ", message: " + response.message());
-				syncResult.stats.numIoExceptions++;
+				syncStats.addIoError();
 			}
 		}
 		catch (IOException | RemoteException e)
 		{
 			Log.d("I/O error: " + e.getMessage());
-			syncResult.stats.numIoExceptions++;
+			syncStats.addIoError(e.getMessage());
 		}
 		catch (RuntimeException e)
 		{
 			Log.d("Runtime exception: " + e.getMessage());
-			syncResult.stats.numParseExceptions++;
+			syncStats.addParseError(e.getMessage());
 		}
 
-		if (forceRefresh && syncResult.stats.numIoExceptions == 0 && syncResult.stats.numParseExceptions == 0)
+		/*
+		 * If forceRefresh was used to transition the settings from
+		 * no images to load all images and there was no error,
+		 * we are done and don't need a full refresh for the next
+		 * sync.
+		 */
+		if (forceRefresh && !syncStats.hasErrors())
 		{
 			SharedPreferences.Editor editor = sharedPreferences.edit();
 			editor.putBoolean(Settings.SYNC_FORCE_UPDATE, false);
@@ -248,7 +253,7 @@ public class WordpressClient
 		Log.d("adding new entry " + post.getId());
 		AddAttachedMedia(post);
 		contentProviderClient.insert(ContentUris.withAppendedId(DataProvider.CONTENT_URI, post.getId()), post.getAsContentValues());
-		syncResult.stats.numInserts++;
+		syncStats.addInsert();
 	}
 
 	private void updatePost(Post post) throws RemoteException
@@ -257,7 +262,7 @@ public class WordpressClient
 		RemoveAttachedMedia(post.getId());
 		AddAttachedMedia(post);
 		contentProviderClient.update(ContentUris.withAppendedId(DataProvider.CONTENT_URI, post.getId()), post.getAsContentValues(), null, null);
-		syncResult.stats.numUpdates++;
+		syncStats.addUpdates();
 	}
 
 	private void deletePost(long id) throws RemoteException
@@ -265,7 +270,7 @@ public class WordpressClient
 		Log.d("removing entry " + id);
 		RemoveAttachedMedia(id);
 		contentProviderClient.delete(ContentUris.withAppendedId(DataProvider.CONTENT_URI, id), null, null);
-		syncResult.stats.numDeletes++;
+		syncStats.addDeletes();
 	}
 
 	private boolean AddAttachedMedia(Post post)

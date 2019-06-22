@@ -22,8 +22,6 @@ package com.zapek.android.submarinereader.settings;
 
 public class Settings
 {
-	public static final String SHOW_NETWORK_SETTINGS = "showNetworkSettings";
-
 	public static final String AUTO_NIGHT_MODE = "autoNightMode";
 	public static final boolean AUTO_NIGHT_MODE_DEFAULT = false;
 
@@ -41,4 +39,7 @@ public class Settings
 
 	public static final String DONATION_SKU = "donationSku";
 	public static final String DONATION_INSTALL_TIME = "donationInstallTime";
+
+	public static final String NETWORK_SETTINGS_REVIEWED = "networkSettingsReviewed";
+	public static final boolean NETWORK_SETTINGS_REVIEWED_DEFAULT = false;
 }
