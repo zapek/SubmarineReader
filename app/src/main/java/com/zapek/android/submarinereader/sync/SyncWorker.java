@@ -65,9 +65,9 @@ public class SyncWorker extends Worker
 		}
 	}
 
-	static public void setSyncArticlesAutomatically(boolean automatic)
+	static public void setAutoSync(boolean enabled)
 	{
-		if (automatic)
+		if (enabled)
 		{
 			Constraints constraints = new Constraints.Builder()
 				.setRequiresCharging(true)

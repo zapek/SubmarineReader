@@ -268,7 +268,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 	private void setAutoSync()
 	{
-		SyncWorker.setSyncArticlesAutomatically(sharedPreferences.getBoolean("autoSync", true));
+		SyncWorker.setAutoSync(sharedPreferences.getBoolean("autoSync", true));
 
 	}
 

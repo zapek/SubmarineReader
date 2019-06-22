@@ -62,7 +62,7 @@ public class NetworkSettingsFragment extends PreferenceFragment implements Share
 		switch (key)
 		{
 			case "autoSync":
-				SyncWorker.setSyncArticlesAutomatically(sharedPreferences.getBoolean("autoSync", true)); /* not in Settings as a constant because it must not be used directly */
+				SyncWorker.setAutoSync(sharedPreferences.getBoolean("autoSync", true)); /* not in Settings as a constant because it must not be used directly */
 				break;
 
 			case Settings.SYNC_IMAGES:
@@ -74,7 +74,7 @@ public class NetworkSettingsFragment extends PreferenceFragment implements Share
 	@Override
 	public void onDestroy()
 	{
-		SyncWorker.setSyncArticlesAutomatically(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("autoSync", true));
+		SyncWorker.setAutoSync(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("autoSync", true));
 		super.onDestroy();
 	}
 }

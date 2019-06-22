@@ -471,7 +471,6 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 
 	public void setSyncStatus(boolean isSyncing)
 	{
-		Log.d("syncing status: " + isSyncing);
 		syncStatus = isSyncing;
 
 		updateListEmptyText();
