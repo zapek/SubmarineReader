@@ -39,10 +39,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.FragmentArticledetailBinding;
 import com.zapek.android.submarinereader.db.tables.PostColumns;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.util.JavaScriptInterface;
@@ -64,8 +64,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	private Uri articleUri;
 	private boolean starred;
 
-	private WebView webView;
-
+	private FragmentArticledetailBinding binding;
 	private String shareUrl;
 
 	private final static String[] PROJECTION = {
@@ -88,9 +87,8 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.fragment_articledetail, container, false);
-		webView = view.findViewById(R.id.webView);
-		return view;
+		binding = FragmentArticledetailBinding.inflate(inflater, container, false);
+		return binding.getRoot();
 	}
 
 	@SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
@@ -101,18 +99,18 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
 		boolean directNetwork = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(Settings.DIRECT_NETWORK, Settings.DIRECT_NETWORK_DEFAULT);
 
-		WebSettings webSettings = webView.getSettings();
+		WebSettings webSettings = binding.webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 		webSettings.setDomStorageEnabled(directNetwork);
 		webSettings.setBlockNetworkLoads(!directNetwork);
 		webSettings.setCacheMode(directNetwork ? WebSettings.LOAD_DEFAULT : WebSettings.LOAD_NO_CACHE);
-		webView.setWebViewClient(new CustomWebViewClient());
-		webView.setWebChromeClient(new CustomWebChromeClient(this));
+		binding.webView.setWebViewClient(new CustomWebViewClient());
+		binding.webView.setWebChromeClient(new CustomWebChromeClient(this));
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{
-			webView.addJavascriptInterface(new JavaScriptInterface(view.getContext()), "SubmarineReader");
+			binding.webView.addJavascriptInterface(new JavaScriptInterface(view.getContext()), "SubmarineReader");
 		}
-		webView.setBackgroundColor(Color.TRANSPARENT); /* avoids flickers in night mode */
+		binding.webView.setBackgroundColor(Color.TRANSPARENT); /* avoids flickers in night mode */
 	}
 
 	@Override
@@ -235,7 +233,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 			/*
 			 * The following allows to set the encoding and open local files (assets).
 			 */
-			webView.loadDataWithBaseURL("file:///", content, "text/html", "UTF-8", null);
+			binding.webView.loadDataWithBaseURL("file:///", content, "text/html", "UTF-8", null);
 
 			getActivity().invalidateOptionsMenu();
 		}

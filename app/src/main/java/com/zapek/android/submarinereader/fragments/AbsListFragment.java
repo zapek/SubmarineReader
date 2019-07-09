@@ -223,7 +223,7 @@ public class AbsListFragment extends Fragment
 		}
 		else
 		{
-			standardEmptyView = root.findViewById(android.R.id.empty);
+			standardEmptyView = root.findViewById(R.id.empty);
 			if (standardEmptyView == null)
 			{
 				throw new RuntimeException("Missing empty view");
@@ -234,7 +234,7 @@ public class AbsListFragment extends Fragment
 			}
 			progressContainer = root.findViewById(R.id.progressContainer);
 			listContainer = root.findViewById(R.id.listContainer);
-			View rawListView = root.findViewById(android.R.id.list);
+			View rawListView = root.findViewById(R.id.list);
 			if (rawListView == null)
 			{
 				throw new RuntimeException("Your content must have a ListView or GridView whose id attribute is 'R.id.list'");

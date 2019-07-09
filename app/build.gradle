@@ -28,6 +28,7 @@ if (file('external.gradle').exists())
 
 android {
 	flavorDimensions "main"
+	dataBinding.enabled = true
 
 	if (project.hasProperty("KEYSTORE_ZAPEK_STORE_FILE"))
 	{

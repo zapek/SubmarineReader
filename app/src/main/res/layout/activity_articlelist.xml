@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout android:id="@+id/drawer_layout"
-                                           xmlns:android="http://schemas.android.com/apk/res/android"
-                                           xmlns:app="http://schemas.android.com/apk/res-auto"
-                                           xmlns:tools="http://schemas.android.com/tools"
-                                           android:layout_width="match_parent"
-                                           android:layout_height="match_parent"
-                                           tools:openDrawer="start">
-	<LinearLayout
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+	<androidx.drawerlayout.widget.DrawerLayout
+		android:id="@+id/drawer_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="vertical">
-		<androidx.appcompat.widget.Toolbar
-			android:id="@+id/toolbar"
-			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:background="?attr/colorPrimary"
-			android:elevation="4dp"
-			android:theme="@style/AppTheme.AppBarOverlay"
-			app:popupTheme="@style/AppTheme.PopupOverlay">
-			<Spinner
-				android:id="@+id/spinner"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"/>
-		</androidx.appcompat.widget.Toolbar>
-		<fragment
-			android:id="@+id/articles"
-			android:name="com.zapek.android.submarinereader.fragments.ArticleListFragment"
+		tools:openDrawer="start">
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			tools:layout="@layout/fragment_articlelist"/>
-	</LinearLayout>
-	<com.google.android.material.navigation.NavigationView
-		android:id="@+id/nav_view"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_gravity="start"
-		android:fitsSystemWindows="true"
-		app:headerLayout="@layout/nav_header_main"
-		app:menu="@menu/activity_articlelist_drawer"/>
-</androidx.drawerlayout.widget.DrawerLayout>
+			android:orientation="vertical">
+			<androidx.appcompat.widget.Toolbar
+				android:id="@+id/toolbar"
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				android:background="?attr/colorPrimary"
+				android:elevation="4dp"
+				android:theme="@style/AppTheme.AppBarOverlay"
+				app:popupTheme="@style/AppTheme.PopupOverlay">
+				<Spinner
+					android:id="@+id/spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"/>
+			</androidx.appcompat.widget.Toolbar>
+			<fragment
+				android:id="@+id/articles"
+				android:name="com.zapek.android.submarinereader.fragments.ArticleListFragment"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				tools:layout="@layout/fragment_articlelist"/>
+		</LinearLayout>
+		<com.google.android.material.navigation.NavigationView
+			android:id="@+id/nav_view"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_gravity="start"
+			android:fitsSystemWindows="true"
+			app:headerLayout="@layout/nav_header_main"
+			app:menu="@menu/activity_articlelist_drawer"/>
+	</androidx.drawerlayout.widget.DrawerLayout>
+</layout>

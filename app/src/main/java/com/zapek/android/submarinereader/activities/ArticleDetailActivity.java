@@ -25,12 +25,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.ActivityArticledetailBinding;
 import com.zapek.android.submarinereader.fragments.ArticleDetailFragment;
 import com.zapek.android.submarinereader.util.NavigationUtils;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 
 public class ArticleDetailActivity extends AppCompatActivity
 {
@@ -39,10 +40,9 @@ public class ArticleDetailActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_articledetail);
+		ActivityArticledetailBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_articledetail);
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		setSupportActionBar(binding.toolbar.toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);

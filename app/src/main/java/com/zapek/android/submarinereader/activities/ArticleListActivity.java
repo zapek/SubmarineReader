@@ -38,7 +38,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClient.BillingResponseCode;
@@ -52,6 +51,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.google.android.material.navigation.NavigationView;
 import com.zapek.android.submarinereader.BuildConfig;
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.ActivityArticlelistBinding;
 import com.zapek.android.submarinereader.fragments.ArticleListFragment;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.sync.SyncProgress;
@@ -68,8 +68,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -90,7 +89,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	private SharedPreferences sharedPreferences;
 	private ArticleListFragment articleListFragment;
 	private ActionBarDrawerToggle actionBarDrawerToggle;
-	private DrawerLayout drawerLayout;
+	private ActivityArticlelistBinding binding;
 	private boolean nightMode;
 
 	private BillingClient billingClient;
@@ -100,10 +99,9 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_articlelist);
+		binding = DataBindingUtil.setContentView(this, R.layout.activity_articlelist);
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		setSupportActionBar(binding.toolbar);
 
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -112,16 +110,14 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 
 		nightMode = NightModeUtils.isInNightMode(this);
 
-		Spinner spinner = toolbar.findViewById(R.id.spinner);
 		ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.navigation, R.layout.support_simple_spinner_dropdown_item);
 		arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-		spinner.setAdapter(arrayAdapter);
-		spinner.setOnItemSelectedListener(this);
+		binding.spinner.setAdapter(arrayAdapter);
+		binding.spinner.setOnItemSelectedListener(this);
 
-		drawerLayout = findViewById(R.id.drawer_layout);
 		actionBarDrawerToggle = new ActionBarDrawerToggle(
 			this,
-			drawerLayout,
+			binding.drawerLayout,
 			R.string.navigation_drawer_open,
 			R.string.navigation_drawer_close
 		)
@@ -138,12 +134,11 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 				super.onDrawerClosed(drawerView);
 			}
 		};
-		drawerLayout.addDrawerListener(actionBarDrawerToggle);
+		binding.drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
-		NavigationView navigationView = findViewById(R.id.nav_view);
-		navigationView.setNavigationItemSelectedListener(this);
+		binding.navView.setNavigationItemSelectedListener(this);
 
-		View headerView = navigationView.getHeaderView(0);
+		View headerView = binding.navView.getHeaderView(0);
 		ImageView nightButton = headerView.findViewById(R.id.night);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
 		{
@@ -275,9 +270,9 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	@Override
 	public void onBackPressed()
 	{
-		if (drawerLayout.isDrawerOpen(Gravity.START))
+		if (binding.drawerLayout.isDrawerOpen(Gravity.START))
 		{
-			drawerLayout.closeDrawer(Gravity.START);
+			binding.drawerLayout.closeDrawer(Gravity.START);
 		}
 		else
 		{
@@ -402,7 +397,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 				startActivity(new Intent(this, AboutActivity.class));
 				break;
 		}
-		drawerLayout.closeDrawer(Gravity.START);
+		binding.drawerLayout.closeDrawer(Gravity.START);
 
 		return false;
 	}

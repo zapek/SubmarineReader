@@ -22,17 +22,19 @@ package com.zapek.android.submarinereader.activities;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.ActivityNetworkSettingsBinding;
 import com.zapek.android.submarinereader.util.AlertRequester;
 import com.zapek.android.submarinereader.util.NavigationUtils;
 import com.zapek.android.submarinereader.util.RawResourcesUtils;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 public class NetworkSettingsActivity extends AppCompatActivity implements AlertRequester.AlertDialogListener
 {
@@ -40,10 +42,10 @@ public class NetworkSettingsActivity extends AppCompatActivity implements AlertR
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_network_settings);
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		ActivityNetworkSettingsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_network_settings);
+
+		setSupportActionBar(binding.toolbar.toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);

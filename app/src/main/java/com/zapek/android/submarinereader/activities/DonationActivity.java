@@ -25,11 +25,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
@@ -47,6 +44,7 @@ import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.zapek.android.submarinereader.BuildConfig;
 import com.zapek.android.submarinereader.Constants;
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.ActivityDonationBinding;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.util.Log;
 
@@ -56,20 +54,13 @@ import java.util.List;
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 
 public class DonationActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, PurchasesUpdatedListener, BillingClientStateListener, SkuDetailsResponseListener, AcknowledgePurchaseResponseListener
 {
 	private final boolean simulate = false;//!BuildConfig.BUILD_TYPE.equals("release");
 
-	private RadioGroup paymentGroup;
-	private RadioButton coffeeRadio;
-	private RadioButton dinnerRadio;
-	private RadioButton rentRadio;
-	private TextView errorText;
-	private ViewGroup donationGroup;
-	private ViewGroup thankYouGroup;
-	private Button payButton;
+	private ActivityDonationBinding binding;
 	private SharedPreferences sharedPreferences;
 	private boolean hasError;
 
@@ -83,21 +74,12 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_donation);
+		binding = DataBindingUtil.setContentView(this, R.layout.activity_donation);
 
-		paymentGroup = findViewById(R.id.paymentGroup);
-		paymentGroup.setOnCheckedChangeListener(this);
-		coffeeRadio = findViewById(R.id.coffee);
-		dinnerRadio = findViewById(R.id.dinner);
-		rentRadio = findViewById(R.id.rent);
-		donationGroup = findViewById(R.id.donationGroup);
-		thankYouGroup = findViewById(R.id.thankyouGroup);
-		errorText = findViewById(R.id.error);
-		payButton = findViewById(R.id.pay);
-		payButton.setOnClickListener(this);
+		binding.paymentGroup.setOnCheckedChangeListener(this);
+		binding.payButton.setOnClickListener(this);
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		setSupportActionBar(binding.toolbar.toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -136,21 +118,21 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	{
 		switch (v.getId())
 		{
-			case R.id.pay:
-				payButton.setEnabled(false);
+			case R.id.payButton:
+				binding.payButton.setEnabled(false);
 
 				String sku;
-				switch (paymentGroup.getCheckedRadioButtonId())
+				switch (binding.paymentGroup.getCheckedRadioButtonId())
 				{
-					case R.id.coffee:
+					case R.id.coffeeRadio:
 						sku = Constants.SKU_COFFEE;
 						break;
 
-					case R.id.dinner:
+					case R.id.dinnerRadio:
 						sku = Constants.SKU_DINNER;
 						break;
 
-					case R.id.rent:
+					case R.id.rentRadio:
 						sku = Constants.SKU_RENT;
 						break;
 
@@ -165,8 +147,8 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 						showError("");
 
 						sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
-						donationGroup.setVisibility(View.GONE);
-						thankYouGroup.setVisibility(View.VISIBLE);
+						binding.donationGroup.setVisibility(View.GONE);
+						binding.thankyouGroup.setVisibility(View.VISIBLE);
 					}
 					else
 					{
@@ -223,7 +205,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 			case R.id.paymentGroup:
 				if ((billingClient != null && billingClient.isReady() && !hasError) || simulate)
 				{
-					payButton.setEnabled(true);
+					binding.payButton.setEnabled(true);
 				}
 				break;
 		}
@@ -274,15 +256,15 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 				switch (skuDetails.getSku())
 				{
 					case Constants.SKU_COFFEE:
-						setPrice(coffeeRadio, R.string.sku_coffee_ask, skuDetails);
+						setPrice(binding.coffeeRadio, R.string.sku_coffee_ask, skuDetails);
 						break;
 
 					case Constants.SKU_DINNER:
-						setPrice(dinnerRadio, R.string.sku_dinner_ask, skuDetails);
+						setPrice(binding.dinnerRadio, R.string.sku_dinner_ask, skuDetails);
 						break;
 
 					case Constants.SKU_RENT:
-						setPrice(rentRadio, R.string.sku_rent_ask, skuDetails);
+						setPrice(binding.rentRadio, R.string.sku_rent_ask, skuDetails);
 						break;
 
 					default:
@@ -339,8 +321,8 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 				showError("");
 
 				sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
-				donationGroup.setVisibility(View.GONE);
-				thankYouGroup.setVisibility(View.VISIBLE);
+				binding.donationGroup.setVisibility(View.GONE);
+				binding.thankyouGroup.setVisibility(View.VISIBLE);
 			}
 			else
 			{
@@ -371,13 +353,13 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	{
 		if (!TextUtils.isEmpty(errorMessage))
 		{
-			errorText.setText(errorMessage);
-			errorText.setVisibility(View.VISIBLE);
+			binding.errorText.setText(errorMessage);
+			binding.errorText.setVisibility(View.VISIBLE);
 			hasError = true;
 		}
 		else
 		{
-			errorText.setVisibility(View.GONE);
+			binding.errorText.setVisibility(View.GONE);
 			hasError = false;
 		}
 	}

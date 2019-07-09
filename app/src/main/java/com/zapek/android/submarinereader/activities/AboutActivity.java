@@ -34,12 +34,12 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zapek.android.submarinereader.BuildConfig;
 import com.zapek.android.submarinereader.Constants;
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.ActivityAboutBinding;
 import com.zapek.android.submarinereader.settings.Settings;
 import com.zapek.android.submarinereader.util.NavigationUtils;
 import com.zapek.android.submarinereader.util.NightModeUtils;
@@ -47,7 +47,7 @@ import com.zapek.android.submarinereader.util.RawResourcesUtils;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -56,46 +56,35 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_about);
+		ActivityAboutBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_about);
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		setSupportActionBar(binding.toolbar.toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-		ImageView badgeImage = findViewById(R.id.badge_image);
-		TextView badgeText = findViewById(R.id.badge_text);
-
-		TextView version = findViewById(R.id.version);
 		if (BuildConfig.BUILD_TYPE.equals("release"))
 		{
-			version.setText(BuildConfig.VERSION_NAME);
+			binding.version.setText(BuildConfig.VERSION_NAME);
 		}
 		else
 		{
-			version.setText(BuildConfig.VERSION_NAME + " (" + BuildConfig.BUILD_TYPE + ")");
+			binding.version.setText(BuildConfig.VERSION_NAME + " (" + BuildConfig.BUILD_TYPE + ")");
 		}
 
-		TextView webLink = findViewById(R.id.web);
-		setAsUrl(webLink, getString(R.string.web_url));
-		webLink.setOnClickListener(this);
+		setAsUrl(binding.web, getString(R.string.web_url));
+		binding.web.setOnClickListener(this);
 
-		TextView supportLink = findViewById(R.id.support);
-		setAsUrl(supportLink, getString(R.string.support_email));
-		supportLink.setOnClickListener(this);
+		setAsUrl(binding.support, getString(R.string.support_email));
+		binding.support.setOnClickListener(this);
 
 		if (!TextUtils.isEmpty(getString(R.string.development_url)))
 		{
-			TextView developmentTitle = findViewById(R.id.development_title);
-			TextView developmentLink = findViewById(R.id.development);
-			setAsUrl(developmentLink, getString(R.string.development_url));
-			developmentLink.setOnClickListener(this);
-			developmentTitle.setVisibility(View.VISIBLE);
-			developmentLink.setVisibility(View.VISIBLE);
+			setAsUrl(binding.development, getString(R.string.development_url));
+			binding.development.setOnClickListener(this);
+			binding.developmentTitle.setVisibility(View.VISIBLE);
+			binding.development.setVisibility(View.VISIBLE);
 		}
-
-		TextView licenseText = findViewById(R.id.license);
 
 		String license = "";
 
@@ -107,9 +96,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
 		license += RawResourcesUtils.getRawResourceAsString(this, R.raw.license);
 
-		licenseText.setText(Html.fromHtml(license));
-		licenseText.setMovementMethod(LinkMovementMethod.getInstance());
-		setLinkColor(licenseText);
+		binding.license.setText(Html.fromHtml(license));
+		binding.license.setMovementMethod(LinkMovementMethod.getInstance());
+		setLinkColor(binding.license);
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String sku = sharedPreferences.getString(Settings.DONATION_SKU, "");
@@ -138,9 +127,9 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 
 			if (resId != 0)
 			{
-				badgeImage.setImageResource(resId);
-				badgeImage.setVisibility(View.VISIBLE);
-				badgeText.setVisibility(View.VISIBLE);
+				binding.badgeImage.setImageResource(resId);
+				binding.badgeImage.setVisibility(View.VISIBLE);
+				binding.badgeText.setVisibility(View.VISIBLE);
 			}
 		}
 	}

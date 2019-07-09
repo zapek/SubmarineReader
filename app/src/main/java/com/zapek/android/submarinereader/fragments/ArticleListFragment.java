@@ -35,9 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +44,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.zapek.android.submarinereader.Constants;
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.FragmentArticlelistBinding;
 import com.zapek.android.submarinereader.db.DataProvider;
 import com.zapek.android.submarinereader.db.tables.PostColumns;
 import com.zapek.android.submarinereader.sync.SyncWorker;
@@ -75,14 +74,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 
 	private static final int LIST_LOADER = 1;
 
-	private TextView count;
-	private ViewGroup empty;
-	private TextView emptyText;
-	private ProgressBar progressBar;
-	private Button syncButton;
-	private View progressContainer;
-	private View listContainer;
-	private SwipeRefreshLayout swipeRefreshLayout;
+	private FragmentArticlelistBinding binding;
 	private boolean syncStatus;
 
 	private static final String STATE_MODE = "mode";
@@ -119,16 +111,8 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.fragment_articlelist, container, false);
-		count = view.findViewById(R.id.count);
-		empty = view.findViewById(android.R.id.empty);
-		emptyText = view.findViewById(R.id.emptyText);
-		progressContainer = view.findViewById(R.id.progressContainer);
-		progressBar = view.findViewById(R.id.progressBar);
-		syncButton = view.findViewById(R.id.sync);
-		listContainer = view.findViewById(R.id.listContainer);
-		swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-		return view;
+		binding = FragmentArticlelistBinding.inflate(inflater, container, false);
+		return binding.getRoot();
 	}
 
 	@Override
@@ -167,8 +151,8 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		setListShown(false);
 
 		getAbsListView().setOnScrollListener(this);
-		swipeRefreshLayout.setOnRefreshListener(this);
-		syncButton.setOnClickListener(this);
+		binding.swipeRefreshLayout.setOnRefreshListener(this);
+		binding.syncButton.setOnClickListener(this);
 
 		if (savedInstanceState != null)
 		{
@@ -233,9 +217,9 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	@Override
 	public void setEmptyText(CharSequence text)
 	{
-		if (empty != null && emptyText != null)
+		if (binding.empty != null && binding.emptyText != null)
 		{
-			emptyText.setText(text);
+			binding.emptyText.setText(text);
 		}
 	}
 
@@ -244,13 +228,13 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	{
 		if (shown)
 		{
-			progressContainer.setVisibility(View.GONE);
-			listContainer.setVisibility(View.VISIBLE);
+			binding.progressContainer.setVisibility(View.GONE);
+			binding.listContainer.setVisibility(View.VISIBLE);
 		}
 		else
 		{
-			progressContainer.setVisibility(View.VISIBLE);
-			listContainer.setVisibility(View.GONE);
+			binding.progressContainer.setVisibility(View.VISIBLE);
+			binding.listContainer.setVisibility(View.GONE);
 		}
 	}
 
@@ -299,7 +283,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		setListShown(true);
 
 		int articlesCount = cursor.getCount();
-		count.setText(getResources().getQuantityString(R.plurals.status, articlesCount, articlesCount));
+		binding.count.setText(getResources().getQuantityString(R.plurals.status, articlesCount, articlesCount));
 
 		/*
 		 * We need that when rotating.
@@ -308,7 +292,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		{
 			if (getAbsListView().canScrollVertically(-1))
 			{
-				swipeRefreshLayout.setEnabled(false);
+				binding.swipeRefreshLayout.setEnabled(false);
 			}
 		});
 	}
@@ -437,12 +421,12 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		{
 			if (!getAbsListView().canScrollVertically(-1))
 			{
-				swipeRefreshLayout.setEnabled(true);
+				binding.swipeRefreshLayout.setEnabled(true);
 			}
 		}
 		else
 		{
-			swipeRefreshLayout.setEnabled(false);
+			binding.swipeRefreshLayout.setEnabled(false);
 		}
 	}
 
@@ -463,7 +447,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	{
 		switch (v.getId())
 		{
-			case R.id.sync:
+			case R.id.syncButton:
 				syncArticles();
 				break;
 		}
@@ -477,13 +461,13 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 
 		if (isSyncing)
 		{
-			progressBar.setIndeterminate(true);
-			progressBar.setVisibility(View.VISIBLE);
+			binding.progressBar.setIndeterminate(true);
+			binding.progressBar.setVisibility(View.VISIBLE);
 		}
 		else
 		{
-			progressBar.setVisibility(View.INVISIBLE);
-			swipeRefreshLayout.setRefreshing(false);
+			binding.progressBar.setVisibility(View.INVISIBLE);
+			binding.swipeRefreshLayout.setRefreshing(false);
 		}
 	}
 
@@ -519,8 +503,8 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 
 	public void setSyncProgress(int current, int total)
 	{
-		progressBar.setIndeterminate(false);
-		progressBar.setMax(total);
-		progressBar.setProgress(current);
+		binding.progressBar.setIndeterminate(false);
+		binding.progressBar.setMax(total);
+		binding.progressBar.setProgress(current);
 	}
 }

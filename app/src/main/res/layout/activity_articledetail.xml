@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/page_background"
-              android:orientation="vertical"
-              tools:ignore="Overdraw">
-
-	<include layout="@layout/toolbar"/>
-
-	<fragment
-		android:id="@+id/fragment_articledetail"
-		android:name="com.zapek.android.submarinereader.fragments.ArticleDetailFragment"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		tools:layout="@layout/fragment_articledetail"/>
-
-</LinearLayout>
+		android:background="@color/page_background"
+		android:orientation="vertical"
+		tools:ignore="Overdraw">
+		<include
+			android:id="@+id/toolbar"
+			layout="@layout/toolbar"/>
+		<fragment
+			android:id="@+id/fragment_articledetail"
+			android:name="com.zapek.android.submarinereader.fragments.ArticleDetailFragment"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			tools:layout="@layout/fragment_articledetail"/>
+	</LinearLayout>
+</layout>

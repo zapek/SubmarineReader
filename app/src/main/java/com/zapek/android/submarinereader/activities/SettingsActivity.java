@@ -21,13 +21,15 @@
 package com.zapek.android.submarinereader.activities;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.zapek.android.submarinereader.R;
+import com.zapek.android.submarinereader.databinding.ActivitySettingsBinding;
 import com.zapek.android.submarinereader.util.NavigationUtils;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 public class SettingsActivity extends AppCompatActivity
 {
@@ -35,10 +37,9 @@ public class SettingsActivity extends AppCompatActivity
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_settings);
 
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		ActivitySettingsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
+		setSupportActionBar(binding.toolbar.toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
