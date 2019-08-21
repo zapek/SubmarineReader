@@ -111,20 +111,20 @@ android {
 
 dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
-	androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+	androidTestImplementation('androidx.test.espresso:espresso-core:3.2.0', {
 		exclude group: 'com.android.support', module: 'support-annotations'
 	})
 	implementation 'androidx.appcompat:appcompat:1.0.2'
 	implementation 'com.google.android.material:material:1.0.0'
 	implementation 'androidx.cardview:cardview:1.0.0'
-	implementation 'androidx.work:work-runtime:2.0.1'
-	implementation 'com.squareup.okhttp3:okhttp:3.14.2'
-	implementation 'com.squareup.retrofit2:retrofit:2.6.0'
-	implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+	implementation 'androidx.work:work-runtime:2.2.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.1.0'
+	implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+	implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
 	implementation 'com.google.code.gson:gson:2.8.5'
-	implementation 'org.jsoup:jsoup:1.11.3'
+	implementation 'org.jsoup:jsoup:1.12.1'
 	implementation 'com.squareup.picasso:picasso:2.71828'
 	implementation 'com.android.billingclient:billing:2.0.1'
 	betaImplementation 'ch.acra:acra:4.9.2'
-	testImplementation 'junit:junit:4.13-beta-2'
+	testImplementation 'junit:junit:4.13-beta-3'
 }
