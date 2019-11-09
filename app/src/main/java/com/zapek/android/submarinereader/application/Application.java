@@ -24,6 +24,7 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 
 import com.zapek.android.submarinereader.settings.Settings;
+import com.zapek.android.submarinereader.util.NightModeUtils;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -35,7 +36,7 @@ public class Application extends android.app.Application
 		super.onCreate();
 
 		boolean autoNightMode = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Settings.AUTO_NIGHT_MODE, Settings.AUTO_NIGHT_MODE_DEFAULT);
-		AppCompatDelegate.setDefaultNightMode(autoNightMode ? AppCompatDelegate.MODE_NIGHT_AUTO : AppCompatDelegate.MODE_NIGHT_NO);
+		AppCompatDelegate.setDefaultNightMode(autoNightMode ? NightModeUtils.getDefaultMode() : AppCompatDelegate.MODE_NIGHT_NO);
 	}
 
 	@Override

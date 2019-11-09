@@ -22,6 +22,9 @@ package com.zapek.android.submarinereader.util;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
+
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class NightModeUtils
 {
@@ -29,5 +32,17 @@ public class NightModeUtils
 	{
 		int currentNightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
 		return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
+	}
+
+	public static int getDefaultMode()
+	{
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+		{
+			return AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+		}
+		else
+		{
+			return AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
+		}
 	}
 }

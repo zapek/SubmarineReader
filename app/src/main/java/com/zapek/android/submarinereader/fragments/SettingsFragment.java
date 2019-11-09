@@ -35,6 +35,7 @@ import com.zapek.android.submarinereader.activities.DonationActivity;
 import com.zapek.android.submarinereader.activities.NetworkSettingsActivity;
 import com.zapek.android.submarinereader.application.Init;
 import com.zapek.android.submarinereader.settings.Settings;
+import com.zapek.android.submarinereader.util.NightModeUtils;
 
 import java.util.List;
 
@@ -111,7 +112,7 @@ public class SettingsFragment extends PreferenceFragment
 
 			case "autoNightMode":
 				boolean autoNightMode = preference.getSharedPreferences().getBoolean(Settings.AUTO_NIGHT_MODE, Settings.AUTO_NIGHT_MODE_DEFAULT);
-				AppCompatDelegate.setDefaultNightMode(autoNightMode ? AppCompatDelegate.MODE_NIGHT_AUTO : AppCompatDelegate.MODE_NIGHT_NO);
+				AppCompatDelegate.setDefaultNightMode(autoNightMode ? NightModeUtils.getDefaultMode() : AppCompatDelegate.MODE_NIGHT_NO);
 				getActivity().recreate();
 				break;
 		}
