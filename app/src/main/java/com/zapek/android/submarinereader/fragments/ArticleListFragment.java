@@ -487,7 +487,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 					.addTag(SyncWorker.SYNC_TAG)
 					.build();
 
-				WorkManager.getInstance().enqueueUniqueWork("ImmediateSync", ExistingWorkPolicy.KEEP, immediateSyncRequest);
+				WorkManager.getInstance(getContext()).enqueueUniqueWork("ImmediateSync", ExistingWorkPolicy.KEEP, immediateSyncRequest);
 			}
 			else
 			{

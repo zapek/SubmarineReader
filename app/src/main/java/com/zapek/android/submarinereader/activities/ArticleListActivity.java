@@ -32,7 +32,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -68,6 +67,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -150,7 +150,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 			nightButton.setVisibility(View.GONE);
 		}
 
-		LiveData<List<WorkInfo>> savedWorkInfo = WorkManager.getInstance().getWorkInfosByTagLiveData(SyncWorker.SYNC_TAG);
+		LiveData<List<WorkInfo>> savedWorkInfo = WorkManager.getInstance(this).getWorkInfosByTagLiveData(SyncWorker.SYNC_TAG);
 		savedWorkInfo.observe(this, this);
 
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -270,9 +270,9 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	@Override
 	public void onBackPressed()
 	{
-		if (binding.drawerLayout.isDrawerOpen(Gravity.START))
+		if (binding.drawerLayout.isDrawerOpen(GravityCompat.START))
 		{
-			binding.drawerLayout.closeDrawer(Gravity.START);
+			binding.drawerLayout.closeDrawer(GravityCompat.START);
 		}
 		else
 		{
@@ -397,7 +397,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 				startActivity(new Intent(this, AboutActivity.class));
 				break;
 		}
-		binding.drawerLayout.closeDrawer(Gravity.START);
+		binding.drawerLayout.closeDrawer(GravityCompat.START);
 
 		return false;
 	}
