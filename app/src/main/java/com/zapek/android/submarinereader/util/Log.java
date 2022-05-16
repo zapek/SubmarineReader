@@ -38,6 +38,14 @@ public class Log
 		}
 	}
 
+	public static void d(String s, Throwable th)
+	{
+		if (BuildConfig.logging)
+		{
+			android.util.Log.d(TAG, s, th);
+		}
+	}
+
 	public static void i(String s)
 	{
 		android.util.Log.i(TAG, s);

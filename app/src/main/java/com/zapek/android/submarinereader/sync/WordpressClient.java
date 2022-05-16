@@ -230,7 +230,7 @@ public class WordpressClient
 		}
 		catch (RuntimeException e)
 		{
-			Log.d("Runtime exception: " + e.getMessage());
+			Log.d("Runtime exception: " + e.getMessage(), e);
 			syncStats.addParseError(e.getMessage());
 		}
 
@@ -481,6 +481,12 @@ public class WordpressClient
 
 	static private String validateContentType(String contentType)
 	{
+		if (contentType == null)
+		{
+			Log.d("no content type");
+			return null;
+		}
+
 		switch (contentType)
 		{
 			case "image/jpeg":
