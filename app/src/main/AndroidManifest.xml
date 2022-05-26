@@ -24,7 +24,8 @@
 		tools:ignore="GoogleAppIndexingWarning">
 		<activity
 			android:name=".activities.ArticleListActivity"
-			android:label="@string/app_name">
+			android:label="@string/app_name"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
@@ -48,7 +49,8 @@
 		<activity
 			android:name=".activities.NetworkSettingsActivity"
 			android:label="Network Settings"
-			android:parentActivityName=".activities.SettingsActivity">
+			android:parentActivityName=".activities.SettingsActivity"
+			android:exported="true">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value=".activities.SettingsActivity"/>

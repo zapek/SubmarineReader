@@ -48,12 +48,9 @@ public class ConnectivityUtils
 				return false;
 			}
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+			if (networkInfo.getDetailedState().equals(NetworkInfo.DetailedState.VERIFYING_POOR_LINK))
 			{
-				if (networkInfo.getDetailedState().equals(NetworkInfo.DetailedState.VERIFYING_POOR_LINK))
-				{
-					return false;
-				}
+				return false;
 			}
 
 			switch (networkInfo.getType())

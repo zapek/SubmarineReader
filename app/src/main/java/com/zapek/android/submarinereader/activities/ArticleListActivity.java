@@ -40,13 +40,12 @@ import android.widget.ImageView;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClient.BillingResponseCode;
-import com.android.billingclient.api.BillingClient.SkuType;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.Purchase.PurchaseState;
-import com.android.billingclient.api.Purchase.PurchasesResult;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.android.material.navigation.NavigationView;
 import com.zapek.android.submarinereader.BuildConfig;
 import com.zapek.android.submarinereader.R;
@@ -431,49 +430,54 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	{
 		if (billingResult.getResponseCode() == BillingResponseCode.OK)
 		{
-			PurchasesResult purchaseResult = billingClient.queryPurchases(SkuType.INAPP);
-
-			if (purchaseResult.getBillingResult().getResponseCode() == BillingResponseCode.OK)
-			{
-				String sku = null;
-
-				Log.d("Billing purchase query successful");
-
-				for (Purchase purchase : purchaseResult.getPurchasesList())
-				{
-					if (purchase.getPurchaseState() == PurchaseState.PURCHASED)
+			billingClient.queryPurchasesAsync(
+				QueryPurchasesParams.newBuilder()
+					.setProductType(BillingClient.ProductType.INAPP)
+					.build(),
+				(purchaseResult, purchases) -> {
+					if (purchaseResult.getResponseCode() == BillingResponseCode.OK)
 					{
-						sku = purchase.getSku();
-					}
-				}
+						String sku = null;
 
-				if (sku != null)
-				{
-					sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
-				}
-				else
-				{
-					if (sharedPreferences.contains(Settings.DONATION_INSTALL_TIME))
-					{
-						long installTime = sharedPreferences.getLong(Settings.DONATION_INSTALL_TIME, 0);
-						if (installTime != 0)
+						Log.d("Billing purchase query successful");
+
+						for (Purchase purchase : purchases)
 						{
-							if (Math.abs(System.currentTimeMillis() - installTime) > DateUtils.WEEK_IN_MILLIS * 2)
+							if (purchase.getPurchaseState() == PurchaseState.PURCHASED)
 							{
-								AlertRequester.confirm(this, getString(R.string.donation_requester), getString(R.string.donation_requester_positive), getString(R.string.donation_requester_negative), REQUEST_DONATE, 0);
+								sku = purchase.getProducts().get(0);
+							}
+						}
+
+						if (sku != null)
+						{
+							sharedPreferences.edit().putString(Settings.DONATION_SKU, sku).apply();
+						}
+						else
+						{
+							if (sharedPreferences.contains(Settings.DONATION_INSTALL_TIME))
+							{
+								long installTime = sharedPreferences.getLong(Settings.DONATION_INSTALL_TIME, 0);
+								if (installTime != 0)
+								{
+									if (Math.abs(System.currentTimeMillis() - installTime) > DateUtils.WEEK_IN_MILLIS * 2)
+									{
+										AlertRequester.confirm(this, getString(R.string.donation_requester), getString(R.string.donation_requester_positive), getString(R.string.donation_requester_negative), REQUEST_DONATE, 0);
+									}
+								}
+							}
+							else
+							{
+								sharedPreferences.edit().putLong(Settings.DONATION_INSTALL_TIME, System.currentTimeMillis()).apply();
 							}
 						}
 					}
 					else
 					{
-						sharedPreferences.edit().putLong(Settings.DONATION_INSTALL_TIME, System.currentTimeMillis()).apply();
+						Log.d("Failed to get billing purchases, code: " + purchaseResult.getResponseCode() + ", message: " + purchaseResult.getDebugMessage());
 					}
 				}
-			}
-			else
-			{
-				Log.d("Failed to get billing purchases, code: " + purchaseResult.getBillingResult().getResponseCode() + ", message: " + purchaseResult.getBillingResult().getDebugMessage());
-			}
+			);
 		}
 		else
 		{

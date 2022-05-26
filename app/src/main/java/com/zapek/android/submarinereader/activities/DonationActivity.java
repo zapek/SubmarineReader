@@ -304,7 +304,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 			{
 				if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED)
 				{
-					sku = purchase.getSku(); /* normally he can only purchase one thing at once */
+					sku = purchase.getProducts().get(0); /* normally he can only purchase one thing at once */
 
 					if (!purchase.isAcknowledged())
 					{
