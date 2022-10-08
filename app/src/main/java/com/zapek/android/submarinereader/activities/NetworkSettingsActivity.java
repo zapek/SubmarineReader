@@ -20,6 +20,7 @@
 
 package com.zapek.android.submarinereader.activities;
 
+import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.Html;
@@ -61,6 +62,7 @@ public class NetworkSettingsActivity extends AppCompatActivity implements AlertR
 		return true;
 	}
 
+	@SuppressLint("NonConstantResourceId")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{

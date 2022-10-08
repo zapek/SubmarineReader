@@ -100,7 +100,7 @@ public class AlertRequester extends DialogFragment implements DialogInterface.On
 			}
 			catch (ClassCastException e)
 			{
-				throw new ClassCastException(fragment.toString() + " must implement AlertDialogListener");
+				throw new ClassCastException(fragment + " must implement AlertDialogListener");
 			}
 		}
 	}
@@ -123,7 +123,7 @@ public class AlertRequester extends DialogFragment implements DialogInterface.On
 			}
 			catch (ClassCastException e)
 			{
-				throw new ClassCastException(activity.toString() + " must implement AlertDialogListener");
+				throw new ClassCastException(activity + " must implement AlertDialogListener");
 			}
 		}
 	}

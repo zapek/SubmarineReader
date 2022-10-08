@@ -25,7 +25,7 @@ import android.webkit.JavascriptInterface;
 
 public class JavaScriptInterface
 {
-	private Context context;
+	private final Context context;
 
 	public JavaScriptInterface(Context context)
 	{

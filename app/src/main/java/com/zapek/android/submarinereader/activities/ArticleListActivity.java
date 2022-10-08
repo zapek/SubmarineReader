@@ -20,6 +20,7 @@
 
 package com.zapek.android.submarinereader.activities;
 
+import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -280,7 +281,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState)
+	protected void onSaveInstanceState(@NonNull Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
 		outState.putInt(STATE_NAVIGATION_POSITION, navigationPosition);
@@ -295,7 +296,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
+	public boolean onOptionsItemSelected(@NonNull MenuItem item)
 	{
 		return actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 	}
@@ -308,7 +309,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig)
+	public void onConfigurationChanged(@NonNull Configuration newConfig)
 	{
 		super.onConfigurationChanged(newConfig);
 		actionBarDrawerToggle.onConfigurationChanged(newConfig);
@@ -383,6 +384,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 		nightMode = NightModeUtils.isInNightMode(this);
 	}
 
+	@SuppressLint("NonConstantResourceId")
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem item)
 	{
@@ -492,7 +494,7 @@ public class ArticleListActivity extends AppCompatActivity implements ArticleLis
 	}
 
 	@Override
-	public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases)
+	public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchases)
 	{
 		Log.d("Unhandled purchase updates");
 	}

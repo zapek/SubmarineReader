@@ -20,6 +20,7 @@
 
 package com.zapek.android.submarinereader.activities;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -80,9 +81,11 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 		binding.payButton.setOnClickListener(this);
 
 		setSupportActionBar(binding.toolbar.toolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayShowTitleEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		var actionBar = getSupportActionBar();
+		assert actionBar != null;
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setDisplayShowHomeEnabled(true);
 
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -113,6 +116,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 		}
 	}
 
+	@SuppressLint("NonConstantResourceId")
 	@Override
 	public void onClick(View v)
 	{
@@ -284,7 +288,7 @@ public class DonationActivity extends AppCompatActivity implements View.OnClickL
 	{
 		if (skuDetails != null)
 		{
-			String price = skuDetails.getPrice();
+			var price = skuDetails.getPrice();
 
 			if (!TextUtils.isEmpty(price))
 			{

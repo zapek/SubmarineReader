@@ -8,7 +8,7 @@ import androidx.work.Data;
 
 public class SyncStats
 {
-	private Data.Builder builder;
+	private final Data.Builder builder;
 	private int ioErrorsCount;
 	private String ioErrorReason;
 	private int parseErrorsCount;

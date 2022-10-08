@@ -3,6 +3,7 @@ package com.zapek.android.submarinereader.sync;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.zapek.android.submarinereader.BuildConfig;
@@ -69,15 +70,21 @@ public class SyncWorker extends Worker
 	{
 		if (enabled)
 		{
-			Constraints constraints = new Constraints.Builder()
+			var builder = new Constraints.Builder()
 				.setRequiresCharging(true)
 				.setRequiredNetworkType(NetworkType.CONNECTED)
 				.setRequiredNetworkType(NetworkType.UNMETERED)
-				.setRequiresDeviceIdle(true)
-				.setRequiresStorageNotLow(true)
+				.setRequiresStorageNotLow(true);
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+			{
+				builder.setRequiresDeviceIdle(true);
+			}
+
+			var constraints = builder
 				.build();
 
-			PeriodicWorkRequest periodicSyncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, 1, TimeUnit.DAYS)
+			var periodicSyncRequest = new PeriodicWorkRequest.Builder(SyncWorker.class, 1, TimeUnit.DAYS, 1, TimeUnit.DAYS)
 				.addTag(SyncWorker.SYNC_TAG)
 				.setConstraints(constraints)
 				.build();

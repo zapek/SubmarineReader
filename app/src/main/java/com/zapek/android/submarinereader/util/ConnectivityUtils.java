@@ -30,7 +30,7 @@ public class ConnectivityUtils
 {
 	public static boolean hasGoodConnection(Context context)
 	{
-		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		var connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
 		{
@@ -40,7 +40,7 @@ public class ConnectivityUtils
 			}
 		}
 
-		NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+		var networkInfo = connectivityManager.getActiveNetworkInfo();
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			if (networkInfo.isRoaming())
@@ -86,8 +86,8 @@ public class ConnectivityUtils
 
 	public static boolean hasConnectivity(Context context)
 	{
-		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo ni = cm.getActiveNetworkInfo();
+		var cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		var ni = cm.getActiveNetworkInfo();
 
 		if (ni != null)
 		{

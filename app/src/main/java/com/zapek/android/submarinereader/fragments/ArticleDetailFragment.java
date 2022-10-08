@@ -49,6 +49,7 @@ import com.zapek.android.submarinereader.util.JavaScriptInterface;
 import com.zapek.android.submarinereader.widgets.CustomWebChromeClient;
 import com.zapek.android.submarinereader.widgets.CustomWebViewClient;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ShareCompat;
@@ -85,7 +86,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
 	@Nullable
 	@Override
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
 	{
 		binding = FragmentArticledetailBinding.inflate(inflater, container, false);
 		return binding.getRoot();
@@ -93,7 +94,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
 	@SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
 	@Override
-	public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
 
@@ -126,7 +127,8 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	}
 
 	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args)
+	@NonNull
+	public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args)
 	{
 		switch (id)
 		{
@@ -140,7 +142,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 					null
 				));
 		}
-		return null;
+		throw new IllegalArgumentException("Wrong loader");
 	}
 
 	private static void updateStarredMenu(Menu menu, boolean isStarred)
@@ -157,7 +159,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
 	{
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_articledetail, menu);
@@ -166,7 +168,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
 	private Intent createShareIntent()
 	{
-		ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(getActivity());
+		ShareCompat.IntentBuilder intentBuilder = new ShareCompat.IntentBuilder(getActivity());
 		intentBuilder.setChooserTitle(getString(R.string.share_title));
 		intentBuilder.setSubject(getString(R.string.share_subject));
 		intentBuilder.setText(getString(R.string.share_text, shareUrl));
@@ -174,6 +176,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 		return intentBuilder.getIntent();
 	}
 
+	@SuppressLint("NonConstantResourceId")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -205,7 +208,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
+	public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor)
 	{
 		if (cursor.moveToFirst())
 		{
@@ -214,7 +217,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 			try
 			{
 				final String title = cursor.getString(cursor.getColumnIndex(PostColumns.TITLE));
-				/*final String*/ content = cursor.getString(cursor.getColumnIndex(PostColumns.CONTENT));
+				content = cursor.getString(cursor.getColumnIndex(PostColumns.CONTENT));
 
 				starred = cursor.getInt(cursor.getColumnIndex(PostColumns.STARRED)) == 1;
 
@@ -252,7 +255,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> loader)
+	public void onLoaderReset(@NonNull Loader<Cursor> loader)
 	{
 
 	}

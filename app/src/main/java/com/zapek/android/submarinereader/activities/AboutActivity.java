@@ -20,6 +20,7 @@
 
 package com.zapek.android.submarinereader.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -59,10 +60,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 		ActivityAboutBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_about);
 
 		setSupportActionBar(binding.toolbar.toolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayShowTitleEnabled(true);
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		var actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setDisplayShowHomeEnabled(true);
 
+		//noinspection ConstantConditions
 		if (BuildConfig.BUILD_TYPE.equals("release"))
 		{
 			binding.version.setText(BuildConfig.VERSION_NAME);
@@ -146,6 +149,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
 		return super.onOptionsItemSelected(item);
 	}
 
+	@SuppressLint("NonConstantResourceId")
 	@Override
 	public void onClick(View v)
 	{

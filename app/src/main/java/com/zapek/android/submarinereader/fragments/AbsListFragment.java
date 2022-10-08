@@ -35,6 +35,8 @@ import android.widget.TextView;
 
 import com.zapek.android.submarinereader.R;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class AbsListFragment extends Fragment
@@ -70,7 +72,7 @@ public class AbsListFragment extends Fragment
 	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState)
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
 		ensureList();

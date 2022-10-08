@@ -20,6 +20,7 @@
 
 package com.zapek.android.submarinereader.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
@@ -55,6 +56,7 @@ import com.zapek.android.submarinereader.util.Log;
 import java.io.File;
 import java.util.Arrays;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.loader.app.LoaderManager;
@@ -116,7 +118,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	}
 
 	@Override
-	public void onAttach(Context context)
+	public void onAttach(@NonNull Context context)
 	{
 		super.onAttach(context);
 		try
@@ -125,7 +127,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		}
 		catch (ClassCastException e)
 		{
-			throw new ClassCastException(context.toString() + " must implement OnItemSelectedListener");
+			throw new ClassCastException(context + " must implement OnItemSelectedListener");
 		}
 	}
 
@@ -168,7 +170,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState)
+	public void onSaveInstanceState(@NonNull Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
 		outState.putInt(STATE_MODE, mode);
@@ -239,7 +241,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
 	{
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_articlelist, menu);
@@ -257,7 +259,8 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	}
 
 	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args)
+	@NonNull
+	public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args)
 	{
 		switch (id)
 		{
@@ -272,11 +275,11 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 				);
 
 		}
-		return null;
+		throw new IllegalArgumentException("Wrong loader");
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
+	public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor)
 	{
 		adapter.swapCursor(cursor);
 		updateListEmptyText();
@@ -298,7 +301,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> loader)
+	public void onLoaderReset(@NonNull Loader<Cursor> loader)
 	{
 		adapter.swapCursor(null);
 	}
@@ -371,6 +374,7 @@ public class ArticleListFragment extends AbsListFragment implements SearchView.O
 		}
 	}
 
+	@SuppressLint("NonConstantResourceId")
 	@Override
 	public boolean setViewValue(View view, Cursor cursor, int columnIndex)
 	{

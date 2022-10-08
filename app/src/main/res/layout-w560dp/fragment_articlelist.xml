@@ -88,7 +88,8 @@
 						android:gravity="right"
 						android:paddingRight="8dp"
 						android:textIsSelectable="false"
-						tools:text="128 available"/>
+						tools:text="128 available"
+						android:paddingEnd="8dp" />
 				</LinearLayout>
 			</LinearLayout>
 		</FrameLayout>

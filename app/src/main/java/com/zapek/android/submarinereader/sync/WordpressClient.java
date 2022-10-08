@@ -490,11 +490,7 @@ public class WordpressClient
 		switch (contentType)
 		{
 			case "image/jpeg":
-				return contentType;
-
 			case "image/png":
-				return contentType;
-
 			case "image/gif":
 				return contentType;
 

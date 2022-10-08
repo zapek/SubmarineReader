@@ -172,7 +172,7 @@ public class Filter implements Parcelable
 		bundle = in.readBundle(getClass().getClassLoader());
 	}
 
-	public static final Parcelable.Creator<Filter> CREATOR = new Parcelable.Creator<Filter>()
+	public static final Parcelable.Creator<Filter> CREATOR = new Parcelable.Creator<>()
 	{
 
 		@Override

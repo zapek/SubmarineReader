@@ -41,12 +41,12 @@ android {
 			}
 		}
 	}
-	compileSdkVersion 32
+	compileSdkVersion 33
 
 	/* default configuration */
 	defaultConfig {
 		minSdkVersion 16
-		targetSdkVersion 32
+		targetSdkVersion 33
 		vectorDrawables.useSupportLibrary = "true"
 		buildConfigField "boolean", "logging", "true"
 		buildConfigField "String", "ACRAUri", "\"\""
@@ -54,7 +54,8 @@ android {
 		resValue "string", "development_url", ""
 		resValue "string", "slogan", ""
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-		resConfig "en" /* limit resource usage to just english (for now) */
+		resConfigs 'en'
+/* limit resource usage to just english (for now) */
 	}
 	buildTypes {
 		debug {
@@ -84,8 +85,8 @@ android {
 			{
 				signingConfig signingConfigs.saker
 			}
-			versionCode 7
-			versionName "1.4"
+			versionCode 8
+			versionName "1.5"
 			buildConfigField "String", "serverUrl", "\"https://thesaker.is/wp-json/wp/v2/\""
 			buildConfigField "String", "ACRAUri", "\"https://zapek.com/report/saker/\""
 			buildConfigField "boolean", "enableDonations", "true"
@@ -97,9 +98,10 @@ android {
 		}
 	}
 	compileOptions {
-		sourceCompatibility = '1.8'
-		targetCompatibility = '1.8'
+		sourceCompatibility = JavaVersion.VERSION_11
+		targetCompatibility = JavaVersion.VERSION_11
 	}
+	namespace 'com.zapek.android.submarinereader'
 
 	// productFlavors are run before buildTypes hence they don't use the final
 	// applicationId. This final loop fixes it
@@ -112,20 +114,20 @@ android {
 dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
-	implementation 'androidx.appcompat:appcompat:1.4.1'
-	implementation 'com.google.android.material:material:1.6.0'
+	implementation 'androidx.appcompat:appcompat:1.5.1'
+	implementation 'com.google.android.material:material:1.6.1'
 	implementation 'androidx.cardview:cardview:1.0.0'
 	implementation 'androidx.work:work-runtime:2.7.1'
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-	implementation 'com.squareup.okhttp3:okhttp:4.2.2'
-	implementation 'com.squareup.retrofit2:retrofit:2.7.0'
-	implementation 'com.squareup.retrofit2:converter-gson:2.7.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'org.jsoup:jsoup:1.15.1'
-	implementation 'com.squareup.picasso:picasso:2.71828'
+	implementation 'org.jsoup:jsoup:1.15.3'
+	implementation 'com.squareup.picasso:picasso:2.8'
 	implementation 'com.android.billingclient:billing:5.0.0'
 	betaImplementation 'ch.acra:acra:4.9.2'
-	testImplementation 'junit:junit:4.13.1'
+	testImplementation 'junit:junit:4.13.2'
 	androidTestImplementation('androidx.test.espresso:espresso-core:3.2.0', {
 		exclude group: 'com.android.support', module: 'support-annotations'
 	})
